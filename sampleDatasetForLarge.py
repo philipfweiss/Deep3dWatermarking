@@ -21,7 +21,8 @@ total_number = 0
 errors = 0
 
 # shutil.rmtree(new_files_dir)
-os.makedirs(new_files_dir)
+if not os.path.isdir(new_files_dir):
+    os.makedirs(new_files_dir)
 
 groups = os.listdir(shape_core_dir)
 
