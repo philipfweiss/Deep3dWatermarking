@@ -15,8 +15,9 @@ if "--cutoff" in args:
     vertice_cutoff = args["--cutoff"]
 size_of_slice = 0
 total_number = 0
+errors = 0
 
-shutil.rmtree(new_files_dir)
+# shutil.rmtree(new_files_dir)
 os.makedirs(new_files_dir)
 
 groups = os.listdir(shape_core_dir)
@@ -24,10 +25,13 @@ groups = os.listdir(shape_core_dir)
 for group in groups:
     objects = os.listdir(os.path.join(shape_core_dir, group))
     for object in objects:
-        with open(os.path.join(shape_core_dir, group, object, "models", "model_normalized.json")) as metadata:
-            data = json.load(metadata)
-            total_number += 1
-            if data["numVertices"] > vertice_cutoff:
-                shutil.move(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
-                size_of_slice += 1
+        try:
+            with open(os.path.join(shape_core_dir, group, object, "models", "model_normalized.json")) as metadata:
+                data = json.load(metadata)
+                total_number += 1
+                if data["numVertices"] > vertice_cutoff:
+                    shutil.move(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
+                    size_of_slice += 1
+        except:
+            errors += 1
     print("slice size: ", size_of_slice, " total number: ", total_number)
