@@ -39,9 +39,11 @@ def main():
     ## Change to adam
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 
+    runner = RunModel()
     for epoch in range(args.epochs):
-        train(args, model, device, train_loader, optimizer, epoch)
-        test(args, model, device, test_loader)
+        runner.train(args, model, device, train_loader, optimizer, epoch)
+        runner.test(args, model, device, test_loader, epoch)
+    runner.visualize()
 
     if (args.save_model):
         torch.save(model.state_dict(),"proj.pt")
