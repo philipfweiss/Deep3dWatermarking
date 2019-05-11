@@ -49,7 +49,7 @@ def move_files(vertice_cutoff, total_slice_size):
                         if not os.path.isfile(new_file_name):
                             convert_to_np_array(os.path.join(model_dir, obj_file_format), new_file_name)
                         size_of_slice += 1
-                        if total_slice_size > size_of_slice:
+                        if total_slice_size < size_of_slice:
                             return (size_of_slice, total_number, errors)
             except:
                 errors += 1
