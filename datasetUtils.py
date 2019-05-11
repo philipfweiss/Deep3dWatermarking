@@ -28,6 +28,6 @@ for group in groups:
             data = json.load(metadata)
             total_number += 1
             if data["numVertices"] > vertice_cutoff:
-                shutil.copy2(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
+                shutil.move(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
                 size_of_slice += 1
     print("slice size: ", size_of_slice, " total number: ", total_number)
