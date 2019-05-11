@@ -54,7 +54,7 @@ def move_files(vertice_cutoff, total_slice_size):
             except:
                 errors += 1
         print("slice size: ", size_of_slice, " total number: ", total_number)
-        return (size_of_slice, total_number, errors)
+    return (size_of_slice, total_number, errors)
 
 size_of_slice, total_number, errors = move_files(vertice_cutoff, total_slice_size)
 print("Completed. Final stats: slice size: ", size_of_slice, " total number: ", total_number, " num error: ", errors)
