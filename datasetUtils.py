@@ -4,8 +4,7 @@ import json
 import argparse
 
 parser = argparse.ArgumentParser(description='Only take shape files with a certain complexity.')
-parser.add_argument('--cutoff', type=int,
-                    help='an integer for the min number of vertices to cut off at')
+parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at')
 
 args = parser.parse_args()
 
@@ -23,7 +22,6 @@ os.makedirs(new_files_dir)
 groups = os.listdir(shape_core_dir)
 
 for group in groups:
-    print("slice size: ", size_of_slice, " total number: ", total_number)
     objects = os.listdir(os.path.join(shape_core_dir, group))
     for object in objects:
         with open(os.path.join(shape_core_dir, group, object, "models", "model_normalized.json")) as metadata:
@@ -32,3 +30,4 @@ for group in groups:
             if data["numVertices"] > vertice_cutoff:
                 shutil.copy2(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
                 size_of_slice += 1
+    print("slice size: ", size_of_slice, " total number: ", total_number)
