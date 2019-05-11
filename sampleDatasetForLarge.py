@@ -2,6 +2,8 @@ import os
 import shutil
 import json
 import argparse
+import pymesh
+import numpy as np
 
 parser = argparse.ArgumentParser(description='Only take shape files with a certain complexity.')
 parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at')
@@ -28,8 +30,9 @@ if not os.path.isdir(new_files_dir):
 groups = os.listdir(shape_core_dir)
 
 def convert_to_np_array(filename, new_filename):
-    # convert filename to numpy array and save in new_filename.
-    pass
+    mesh = pymesh.load_mesh(filename)
+    vertices = mesh.vertices
+    np.save(new_filename, vertices)
 
 def move_files(vertice_cutoff, total_slice_size):
     size_of_slice = 0
