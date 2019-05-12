@@ -44,7 +44,7 @@ def save_as_ply(filename, new_filename):
 
 def convert_to_np_array(filename, new_filename):
     anky = PyntCloud.from_file(filename)
-    anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=True, as_PyntCloud=True)
+    anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
     np.save(new_filename, anky_cloud.points.values)
 
 def move_files(vertice_cutoff, total_slice_size):
