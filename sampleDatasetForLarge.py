@@ -47,7 +47,7 @@ def move_files(vertice_cutoff, total_slice_size):
                     total_number += 1
                     if data["numVertices"] > vertice_cutoff:
                         shutil.move(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
-                        model_dir = os.path.join(new_files_dir, object, "model")
+                        model_dir = os.path.join(new_files_dir, object, "models")
                         new_file_name = os.path.join(model_dir, np_file_format)
                         if not os.path.isfile(new_file_name):
                             convert_to_np_array(os.path.join(model_dir, obj_file_format), new_file_name)
