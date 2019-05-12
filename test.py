@@ -5,14 +5,15 @@ import numpy as np
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-vals = np.load("/Users/Lipman/Downloads/model_normalized-2.npy")
-print(vals.shape[0])
+vals = np.load("/Users/Lipman/Downloads/model_normalized-3.npy")
+print(vals.shape)
+
 i = 0
 for v in np.take(vals, np.random.choice(vals.shape[0], 10000), axis=0):
     i += 1
     if i % 100 == 0:
         print(i)
-    ax.scatter(v[0], v[1], v[2], c='r', alpha=.25, marker='.')
+    ax.scatter(v[0], v[1], v[2], c='r', alpha=.25, marker='.', depthshade=True)
 
 ax.set_xlabel('X Label')
 ax.set_ylabel('Y Label')

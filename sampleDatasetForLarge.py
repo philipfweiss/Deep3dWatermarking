@@ -45,7 +45,12 @@ def save_as_ply(filename, new_filename):
 def convert_to_np_array(filename, new_filename):
     anky = PyntCloud.from_file(filename)
     anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
-    np.save(new_filename, anky_cloud.points.values)
+    voxelgrid_id = anky_cloud.add_structure("voxelgrid", n_x=265, n_y=265, n_z=265)
+
+    voxelgrid = anky_cloud.structures[voxelgrid_id]
+
+    binary_feature_vector = voxelgrid.get_feature_vector(mode="binary")
+    np.save(new_filename, binary_feature_vector)
 
 def move_files(vertice_cutoff, total_slice_size):
     size_of_slice = 0
