@@ -8,7 +8,7 @@ import numpy as np
 parser = argparse.ArgumentParser(description='Only take shape files with a certain complexity.')
 parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at')
 parser.add_argument('--size', type=int, help='an integer for the max number of examples to pick')
-parser.add_argument('--recompute', help='if program should recompute numpy files')
+parser.add_argument('--norecompute', help='if program should recompute numpy files')
 
 args = parser.parse_args()
 
@@ -25,9 +25,9 @@ total_slice_size = 500
 if "--size" in args:
     total_slice_size = args["--size"]
 
-recompute = False
-if "--recompute" in args:
-    recompute = True
+recompute = True
+if "--norecompute" in args:
+    recompute = False
 
 if not os.path.isdir(new_files_dir):
     os.makedirs(new_files_dir)
