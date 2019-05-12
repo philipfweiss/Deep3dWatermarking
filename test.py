@@ -9,11 +9,15 @@ vals = np.load("/Users/Lipman/Downloads/model_normalized-3.npy")
 print(vals.shape)
 
 i = 0
-for v in np.take(vals, np.random.choice(vals.shape[0], 10000), axis=0):
-    i += 1
-    if i % 100 == 0:
-        print(i)
-    ax.scatter(v[0], v[1], v[2], c='r', alpha=.25, marker='.', depthshade=True)
+
+for x, xidx in enumerate(vals):
+    for y, yidx in enumerate(x):
+        for z, zidx in enumerate(y):
+            i += 1
+            if i % 100 == 0:
+                print(i)
+            if z == 1.0:
+                ax.scatter(xidx, yidx, zidx, c='r', alpha=.25, marker='.', depthshade=True)
 
 ax.set_xlabel('X Label')
 ax.set_ylabel('Y Label')
