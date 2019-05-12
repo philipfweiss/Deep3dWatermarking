@@ -8,6 +8,7 @@ import numpy as np
 parser = argparse.ArgumentParser(description='Only take shape files with a certain complexity.')
 parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at')
 parser.add_argument('--size', type=int, help='an integer for the max number of examples to pick')
+parser.add_argument('--recompute', help='if program should recompute numpy files')
 
 args = parser.parse_args()
 
@@ -23,6 +24,10 @@ if "--cutoff" in args:
 total_slice_size = 500
 if "--size" in args:
     total_slice_size = args["--size"]
+
+recompute = False
+if "--recompute" in args:
+    recompute = True
 
 if not os.path.isdir(new_files_dir):
     os.makedirs(new_files_dir)
@@ -49,8 +54,11 @@ def move_files(vertice_cutoff, total_slice_size):
                         shutil.move(os.path.join(shape_core_dir, group, object), os.path.join(new_files_dir, object))
                         model_dir = os.path.join(new_files_dir, object, "models")
                         new_file_name = os.path.join(model_dir, np_file_format)
+                        obj_file_name = os.path.join(model_dir, obj_file_format)
+                        if recompute and os.path.isfile(new_file_name):
+                            os.remove(new_file_name)
                         if not os.path.isfile(new_file_name):
-                            convert_to_np_array(os.path.join(model_dir, obj_file_format), new_file_name)
+                            convert_to_np_array(obj_file_name, new_file_name)
                         size_of_slice += 1
                         if total_slice_size <= size_of_slice:
                             return (size_of_slice, total_number, errors)
