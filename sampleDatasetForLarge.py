@@ -37,14 +37,12 @@ if not os.path.isdir(new_files_dir):
 groups = os.listdir(shape_core_dir)
 
 def save_as_ply(filename, new_filename):
-    print("saving as ply", filename, new_filename)
     mesh = pymesh.load_mesh(filename)
     vertices = mesh.vertices
     faces = mesh.faces
     pymesh.save_mesh_raw(new_filename, vertices, faces)
 
 def convert_to_np_array(filename, new_filename):
-    print("saving as point cloud", filename, new_filename)
     anky = PyntCloud.from_file(filename)
     anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
     np.save(new_filename, anky_cloud.points.values)
