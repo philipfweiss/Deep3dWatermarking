@@ -37,12 +37,14 @@ if not os.path.isdir(new_files_dir):
 groups = os.listdir(shape_core_dir)
 
 def save_as_ply(filename, new_filename):
+    print("saving as ply", filename, new_filename)
     mesh = pymesh.load_mesh(filename)
     vertices = mesh.vertices
     faces = mesh.faces
     pymesh.save_mesh_raw(new_filename, vertices, faces)
 
 def convert_to_np_array(filename, new_filename):
+    print("saving as point cloud", filename, new_filename)
     anky = PyntCloud.from_file(filename)
     anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
     np.save(new_filename, anky_cloud.points.values)
@@ -64,8 +66,11 @@ def move_files(vertice_cutoff, total_slice_size):
                         new_file_name = os.path.join(model_dir, np_file_format)
                         obj_file_name = os.path.join(model_dir, obj_file_format)
                         ply_file_name = os.path.join(model_dir, ply_file_format)
-                        if recompute and os.path.isfile(new_file_name):
-                            os.remove(new_file_name)
+                        if recompute:
+                            if os.path.isfile(new_file_name):
+                                os.remove(new_file_name)
+                            if os.path.isfile(ply_file_name):
+                                os.remove(ply_file_name)
                             save_as_ply(obj_file_name, ply_file_name)
                             convert_to_np_array(ply_file_name, new_file_name)
                         elif not os.path.isfile(new_file_name):
