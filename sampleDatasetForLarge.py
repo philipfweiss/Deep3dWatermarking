@@ -2,7 +2,6 @@ import os
 import shutil
 import json
 import argparse
-import pymesh
 from pyntcloud import PyntCloud
 import numpy as np
 
@@ -16,7 +15,6 @@ shape_core_dir = "/home/jlipman500/ShapeNetCore.v2"
 new_files_dir = "/home/jlipman500/ShapeNetCore.slice"
 obj_file_format = "model_normalized.obj"
 np_file_format = "model_normalized.npy"
-ply_file_format = "model_normalized.ply"
 
 vertice_cutoff = 10000
 if "--cutoff" in args:
@@ -33,7 +31,8 @@ groups = os.listdir(shape_core_dir)
 
 def convert_to_np_array(filename, new_filename):
     anky = PyntCloud.from_file(filename)
-    np.save(new_filename, anky.points.values)
+    anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
+    np.save(new_filename, anky_cloud.points.values)
 
 def move_files(vertice_cutoff, total_slice_size):
     size_of_slice = 0
