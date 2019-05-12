@@ -37,6 +37,8 @@ groups = os.listdir(shape_core_dir)
 def convert_to_np_array(filename, new_filename):
     anky = PyntCloud.from_file(filename)
     anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
+    print(anky_cloud)
+    print(anky_cloud.points.values)
     np.save(new_filename, anky_cloud.points.values)
 
 def move_files(vertice_cutoff, total_slice_size):
@@ -57,7 +59,8 @@ def move_files(vertice_cutoff, total_slice_size):
                         obj_file_name = os.path.join(model_dir, obj_file_format)
                         if recompute and os.path.isfile(new_file_name):
                             os.remove(new_file_name)
-                        if not os.path.isfile(new_file_name):
+                            convert_to_np_array(obj_file_name, new_file_name)
+                        elif not os.path.isfile(new_file_name):
                             convert_to_np_array(obj_file_name, new_file_name)
                         size_of_slice += 1
                         if total_slice_size <= size_of_slice:
