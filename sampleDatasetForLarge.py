@@ -3,6 +3,7 @@ import shutil
 import json
 import argparse
 import pymesh
+from pyntcloud import PyntCloud
 import numpy as np
 
 parser = argparse.ArgumentParser(description='Only take shape files with a certain complexity.')
@@ -15,6 +16,7 @@ shape_core_dir = "/home/jlipman500/ShapeNetCore.v2"
 new_files_dir = "/home/jlipman500/ShapeNetCore.slice"
 obj_file_format = "model_normalized.obj"
 np_file_format = "model_normalized.npy"
+ply_file_format = "model_normalized.ply"
 
 vertice_cutoff = 10000
 if "--cutoff" in args:
@@ -30,9 +32,8 @@ if not os.path.isdir(new_files_dir):
 groups = os.listdir(shape_core_dir)
 
 def convert_to_np_array(filename, new_filename):
-    mesh = pymesh.load_mesh(filename)
-    vertices = mesh.vertices
-    np.save(new_filename, vertices)
+    anky = PyntCloud.from_file(filename)
+    np.save(new_filename, anky.points.values)
 
 def move_files(vertice_cutoff, total_slice_size):
     size_of_slice = 0
@@ -57,7 +58,7 @@ def move_files(vertice_cutoff, total_slice_size):
             except Exception as e:
                 print(e)
                 errors += 1
-        print("slice size: ", size_of_slice, " total number: ", total_number)
+        print("group: ", group, " slice size: ", size_of_slice, " total number: ", total_number)
     return (size_of_slice, total_number, errors)
 
 size_of_slice, total_number, errors = move_files(vertice_cutoff, total_slice_size)
