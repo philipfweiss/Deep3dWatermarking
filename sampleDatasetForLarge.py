@@ -54,7 +54,8 @@ def move_files(vertice_cutoff, total_slice_size):
                         size_of_slice += 1
                         if total_slice_size <= size_of_slice:
                             return (size_of_slice, total_number, errors)
-            except:
+            except Exception as e:
+                print(e)
                 errors += 1
         print("slice size: ", size_of_slice, " total number: ", total_number)
     return (size_of_slice, total_number, errors)
