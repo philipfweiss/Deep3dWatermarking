@@ -10,6 +10,8 @@ parser = argparse.ArgumentParser(description='Only take shape files with a certa
 parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at')
 parser.add_argument('--size', type=int, help='an integer for the max number of examples to pick')
 parser.add_argument('--norecompute', help='if program should recompute numpy files')
+parser.add_argument('--pcsize', type=int, help='the density of the point cloud')
+parser.add_argument('--voxelspd', type=int, help='the number of voxels per dimension')
 
 args = parser.parse_args()
 
@@ -31,6 +33,14 @@ recompute = True
 if "--norecompute" in args:
     recompute = False
 
+point_cloud_size = 100000
+if "--pcsize" in args:
+    point_cloud_size = args["--pcsize"]
+
+voxels_per_dim = 64
+if "--voxelspd" in args:
+    voxels_per_dim = args["--voxelspd"]
+
 if not os.path.isdir(new_files_dir):
     os.makedirs(new_files_dir)
 
@@ -44,8 +54,8 @@ def save_as_ply(filename, new_filename):
 
 def convert_to_np_array(filename, new_filename):
     anky = PyntCloud.from_file(filename)
-    anky_cloud = anky.get_sample("mesh_random", n=100000, rgb=False, normals=False, as_PyntCloud=True)
-    voxelgrid_id = anky_cloud.add_structure("voxelgrid", n_x=64, n_y=64, n_z=64)
+    anky_cloud = anky.get_sample("mesh_random", n=point_cloud_size, rgb=False, normals=False, as_PyntCloud=True)
+    voxelgrid_id = anky_cloud.add_structure("voxelgrid", n_x=voxels_per_dim, n_y=voxels_per_dim, n_z=voxels_per_dim)
 
     voxelgrid = anky_cloud.structures[voxelgrid_id]
 
