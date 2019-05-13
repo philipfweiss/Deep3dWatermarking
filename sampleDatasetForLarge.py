@@ -49,7 +49,7 @@ def convert_to_np_array(filename, new_filename):
 
     voxelgrid = anky_cloud.structures[voxelgrid_id]
 
-    binary_feature_vector = voxelgrid.get_feature_vector(mode="binary")
+    binary_feature_vector = voxelgrid.get_feature_vector(mode="density")
     np.save(new_filename, binary_feature_vector)
 
 def move_files(vertice_cutoff, total_slice_size):
