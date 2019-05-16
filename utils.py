@@ -3,10 +3,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
+from torchvision import datasets, transforms, utils
 from collections import *
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 
 class RunModel:
     def __init__(self):
@@ -31,16 +32,31 @@ class RunModel:
             # print(data.shape, target.shape, 'reeee')
             data, target = data.to(device), target.to(device)
             optimizer.zero_grad()
-            output = model(data)
-            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
-            num_cor = pred.eq(target.view_as(pred)).sum().item()
-            loss = F.cross_entropy(output, target)
+
+            N, C, W, H = data.shape
+            messageTensor = createMessageTensor(N, args.k, H, W)
+            desiredOutput = messageTensor[:, :, 0, 0]
+            output, encoding = model(data, messageTensor)
+
+            ## Loss is a combination of distance from image to encoding
+            ## And the loss of the answer.
+            # loss = 10 * torch.mean(torch.abs(desiredOutput - torch.round(output)))
+            loss = 2 * torch.mean(torch.abs(desiredOutput - output))
+
+            loss += torch.mean(torch.abs(encoding - data))
+
             loss.backward()
             optimizer.step()
 
             if batch_idx % args.log_interval == 0:
+                if batch_idx % 50*args.log_interval == 0:
+                    yield data, encoding
+
+
+                print(desiredOutput[0, :], output[0, :])
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
-                print("Num correct: %d / %d" % (num_cor, args.batch_size) )
+                print(loss.item())
+                # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item()))
@@ -62,11 +78,44 @@ class RunModel:
         # print(epoch, " reee ", test_loss)
 
 
-def imshow(img):
-    img = img / 2 + 0.5     # unnormalize
-    npimg = img.numpy()
+def createMessageTensor(batchsize, message_len, width, height):
+
+    message_tensor = torch.zeros(batchsize, message_len, width, height)
+    for b in range(batchsize):
+        message = np.random.randint(2, size=message_len) # defaults to 10
+        # if b == 0:
+        #     print(message, 'mpp')
+        for w in range(width):
+            for h in range(height):
+                message_tensor[b, :, w, h] = torch.tensor(message)
+
+
+
+    return message_tensor
+
+def imshow(im1, im2, i):
+    ax1 = plt.subplot(2,1,1)
+    ax1.set_xticklabels([])
+    ax1.set_yticklabels([])
+
+    plt.title(f'Non-Encoded')
+
+    im1 = im1 / 2 + 0.5     # unnormalize
+    npimg = im1.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()
+
+    ax2 = plt.subplot(2,1,2)
+    ax2.set_xticklabels([])
+    ax2.set_yticklabels([])
+
+    plt.title(f'Encoded')
+
+
+    im2 = im2 / 2 + 0.5     # unnormalize
+    npimg2 = im2.numpy()
+    plt.imshow(np.transpose(npimg2, (1, 2, 0)))
+
+    plt.savefig(f'images/my_fig_{i}.pdf')
 
 
 def getargs():
@@ -79,6 +128,10 @@ def getargs():
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=1e-3, metavar='LR',
                         help='learning rate (default: 0.01)')
+
+    parser.add_argument('--k', type=float, default=10, metavar='LR',
+                        help='Bits in secret message')
+
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                         help='SGD momentum (default: 0.5)')
     parser.add_argument('--no-cuda', action='store_true', default=False,

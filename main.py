@@ -43,12 +43,15 @@ def main():
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
     images, labels = dataiter.next()
-    imshow(utils.make_grid(images))
+    # imshow(utils.make_grid(images))
 
     runner = RunModel()
     for epoch in range(args.epochs):
-        runner.train(args, model, device, train_loader, optimizer, epoch)
-        runner.test(args, model, device, test_loader, epoch)
+        for i, (data, encoding) in enumerate(runner.train(args, model, device, train_loader, optimizer, epoch)):
+            with torch.no_grad():
+                # concat = torch.cat((data, encoding), 0)
+                imshow(utils.make_grid(data[0:40, :, :, :]), utils.make_grid(encoding[0:40, :, :, :]), epoch*10 + i)
+
     runner.visualize()
 
     if (args.save_model):
