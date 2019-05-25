@@ -62,8 +62,8 @@ def main():
     runner.visualize()
 
     if (args.save_model):
-        torch.save(encoder.state_dict(),"proj.pt")
-        torch.save(decoder.state_dict(),"proj.pt")
+        torch.save(encoder.state_dict(),"encoder.pt")
+        torch.save(decoder.state_dict(),"decoder.pt")
 
 if __name__ == "__main__":
     main()

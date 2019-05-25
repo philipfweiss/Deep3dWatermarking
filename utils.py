@@ -59,7 +59,6 @@ class RunModel:
 
                 print(desiredOutput[0, :], decoder_output[0, :])
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
-                print(loss.item())
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f} \tDecoder L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
