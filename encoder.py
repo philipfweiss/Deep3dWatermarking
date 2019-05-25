@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 class Encoder(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(Encoder, self).__init__()
         self.conv1 = nn.Conv2d(3, 3, 3, 1, 1)
         self.bn1 = nn.BatchNorm2d(3)
         self.pool = nn.MaxPool2d(2)
@@ -18,7 +18,6 @@ class Encoder(nn.Module):
         self.conv3 = nn.Conv2d(13, 10, 3, 1, 1)
         self.bn3 = nn.BatchNorm2d(10)
         self.conv4 = nn.Conv2d(10, 10, 3, 1, 1)
-        self.bn4 = nn.BatchNorm2d(10)
 
     def forward(self, x, message):
 

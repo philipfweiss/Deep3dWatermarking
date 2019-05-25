@@ -9,7 +9,9 @@ import torch.nn.functional as F
 
 class Decoder(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(Decoder, self).__init__()
+        self.pool = nn.MaxPool2d(2)
+        self.conv4 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv5 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv6 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv7 = nn.Conv2d(10, 10, 3, 1, 1)
@@ -23,10 +25,11 @@ class Decoder(nn.Module):
         self.bn9 = nn.BatchNorm2d(10)
         self.bn10 = nn.BatchNorm2d(10)
 
+        self.bn4 = nn.BatchNorm2d(10)
         self.fc1 = nn.Linear(640, 10)
 
     def forward(self, x):
-        
+
         x = F.relu(self.bn4(self.conv4(x)))
         x = self.pool(x)
         x = F.relu(self.bn5(self.conv5(x)))

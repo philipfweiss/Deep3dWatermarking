@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 class Adversary(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(Adversary, self).__init__()
         self.conv5 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv6 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv7 = nn.Conv2d(10, 10, 3, 1, 1)
@@ -25,7 +25,7 @@ class Adversary(nn.Module):
 
         self.fc1 = nn.Linear(640, 10)
 
-    def forward(self, x, message):
+    def forward(self, x):
 
         x = F.relu(self.bn4(self.conv4(x)))
         x = self.pool(x)
