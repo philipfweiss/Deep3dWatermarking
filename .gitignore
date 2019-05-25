@@ -1,3 +1,5 @@
 *.pyc
 images/
 data/
+.ipynb_checkpoints/
+*.pt
