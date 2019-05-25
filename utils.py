@@ -26,7 +26,7 @@ class RunModel:
         plt.xlabel("Epoch")
         plt.show()
 
-    def train(self, args, encoder, decoder, device, train_loader, optimizer, epoch):
+    def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
         decoder.train()
         for batch_idx, (data, target) in enumerate(train_loader):
@@ -40,6 +40,7 @@ class RunModel:
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
+            adversary_output = adversary(encoder_output)
             ## Loss is a combination of distance from image to encoding
             ## And the loss of the answer.
             # loss = 10 * torch.mean(torch.abs(desiredOutput - torch.round(output)))
@@ -64,7 +65,7 @@ class RunModel:
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item()))
 
-    def test(self, args, encoder, decoder, device, test_loader, epoch):
+    def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
         decoder.eval()
         test_loss = 0

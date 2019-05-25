@@ -41,12 +41,12 @@ def main():
 
     encoder = Encoder().to(device)
     decoder = Decoder().to(device)
-
+    adversary = Adversary().to(device)
     ## Change to adam
     #optimizer = optim.Adam(model.parameters(), lr=args.lr)
     optimizer = optim.Adam(encoder.parameters(), lr=args.lr)
     optimizer = optim.Adam(decoder.parameters(), lr=args.lr)
-
+    optimizer = optim.Adam(adversary.parameters(), lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
     images, labels = dataiter.next()
@@ -54,7 +54,7 @@ def main():
 
     runner = RunModel()
     for epoch in range(args.epochs):
-        for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, device, train_loader, optimizer, epoch)):
+        for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
                 imshow(utils.make_grid(data[0:40, :, :, :]), utils.make_grid(encoding[0:40, :, :, :]), epoch*10 + i)
@@ -64,6 +64,7 @@ def main():
     if (args.save_model):
         torch.save(encoder.state_dict(),"encoder.pt")
         torch.save(decoder.state_dict(),"decoder.pt")
+        torch.save(adversary.state_dict(),"adversary.pt")
 
 if __name__ == "__main__":
     main()
