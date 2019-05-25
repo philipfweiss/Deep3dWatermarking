@@ -57,4 +57,5 @@ def main():
     if (args.save_model):
         torch.save(model.state_dict(),"proj.pt")
 
-main()
+if __name__ == "__main__":
+    main()
