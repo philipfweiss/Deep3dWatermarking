@@ -11,34 +11,32 @@ class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
         self.pool = nn.MaxPool2d(2)
+        self.conv1 = nn.Conv2d(3, 10, 3, 1, 1)
+        self.conv2 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.conv3 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv4 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv5 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv6 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv7 = nn.Conv2d(10, 10, 3, 1, 1)
-        self.conv8 = nn.Conv2d(10, 10, 3, 1, 1)
-        self.conv9 = nn.Conv2d(10, 10, 3, 1, 1)
-        self.conv10 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.bn1 = nn.BatchNorm2d(10)
+        self.bn2 = nn.BatchNorm2d(10)
+        self.bn3 = nn.BatchNorm2d(10)
+        self.bn4 = nn.BatchNorm2d(10)
         self.bn5 = nn.BatchNorm2d(10)
         self.bn6 = nn.BatchNorm2d(10)
         self.bn7 = nn.BatchNorm2d(10)
-        self.bn8 = nn.BatchNorm2d(10)
-        self.bn9 = nn.BatchNorm2d(10)
-        self.bn10 = nn.BatchNorm2d(10)
 
-        self.bn4 = nn.BatchNorm2d(10)
         self.fc1 = nn.Linear(640, 10)
 
     def forward(self, x):
 
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = self.pool(x)
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
         x = F.relu(self.bn4(self.conv4(x)))
-        x = self.pool(x)
         x = F.relu(self.bn5(self.conv5(x)))
-        x = F.relu(self.bn6(self.conv6(x)))
-        x = F.relu(self.bn7(self.conv7(x)))
-        x = F.relu(self.bn8(self.conv8(x)))
-
         x = self.pool(x)
-
 
         ## Flatten and affine
         x = x.view(x.size(0), -1)
