@@ -46,9 +46,9 @@ class RunModel:
             #loss = 2 * torch.mean(torch.abs(desiredOutput - output))
             #loss += torch.mean(torch.abs(encoding - data))
 
-            loss = torch.mean(torch.abs(data - encoder_output)) #encoder loss
-            loss +=  2 * torch.mean(torch.abs(desiredOutput - decoder_output)) #decoder loss
-
+            encoder_loss = torch.mean(torch.abs(data - encoder_output)) #encoder loss
+            decoder_loss =  2 * torch.mean(torch.abs(desiredOutput - decoder_output)) #decoder loss
+            loss = encoder_loss + decoder_loss
             loss.backward()
             optimizer.step()
 
@@ -61,9 +61,9 @@ class RunModel:
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 print(loss.item())
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f} \tDecoder L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item()))
+                    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item()))
 
     def test(self, args, encoder, decoder, device, test_loader, epoch):
         encoder.eval()
