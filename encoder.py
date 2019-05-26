@@ -19,8 +19,8 @@ class Encoder(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 3, 3, 1, 1)
         self.conv2 = nn.Conv2d(3, 3, 3, 1, 1)
-        self.conv3 = nn.Conv2d(3+k, k, 3, 1, 1)
-        self.conv4 = nn.Conv2d(k, 3, 3, 1, 1)
+        self.conv3 = nn.Conv2d(3+k, 10, 3, 1, 1)
+        self.conv4 = nn.Conv2d(10, 3, 3, 1, 1)
         self.conv5 = nn.Conv2d(3, 10, 3, 1, 1)
         self.conv6 = nn.Conv2d(10, 3, 3, 1, 1)
 
