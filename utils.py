@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
+def bce_loss(input, target):
+    max_val = (-input).clamp(min=0)
+    return input - input * target + max_val + ((-max_val).exp() + (-input - max_val).exp()).log()
+
 class RunModel:
     def __init__(self):
         self.train_losses = []
@@ -41,14 +45,20 @@ class RunModel:
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
-            adversary_output_false = adversary(encoder_output)
-            adversary_output_true = adversary(data)
+            adversary_output_fake = adversary(encoder_output)
+            adversary_output_real = adversary(data)
+
+            N = adversary_output_fake.size()[0]
+            true_labels = torch.ones(N)
+            false_labels = torch.zeros(N)
+
             #print(adversary_output_false.shape)
 
-            decoder_loss = torch.mean(torch.log(desiredOutput - decoder_output)) #decoder loss
-            encoder_loss = torch.mean(torch.log(1 - adversary_output_false)) + decoder_loss #encoder loss
-            adversary_loss = torch.mean(torch.log(adversary_output_true)) + torch.mean(torch.log(1-adversary_output_false))
+            bce(input, target)
 
+            decoder_loss = torch.mean(torch.log(desiredOutput - decoder_output)) #decoder loss
+            encoder_loss = torch.mean(bce_loss(adversary_output_fake, true_labels)) + decoder_loss #encoder loss
+            adversary_loss = torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))
             loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
             optimizer.step()
