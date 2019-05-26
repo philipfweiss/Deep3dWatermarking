@@ -18,6 +18,7 @@ from torchvision import datasets, transforms, utils
 def main():
     args = getargs()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
+    print("using cuda: ", use_cuda)
     torch.manual_seed(args.seed)
     device = torch.device("cuda" if use_cuda else "cpu")
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
