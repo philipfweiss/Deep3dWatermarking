@@ -46,7 +46,7 @@ class RunModel:
             optimizer.zero_grad()
 
             N, C, W, H = data.shape
-            messageTensor = createMessageTensor(N, args.k, H, W)
+            messageTensor = createMessageTensor(N, args.k, H, W, device)
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0]
@@ -105,7 +105,7 @@ class RunModel:
         # print(epoch, " reee ", test_loss)
 
 
-def createMessageTensor(batchsize, message_len, width, height):
+def createMessageTensor(batchsize, message_len, width, height, device):
 
     message_tensor = torch.zeros(batchsize, message_len, width, height)
     for b in range(batchsize):
@@ -118,7 +118,7 @@ def createMessageTensor(batchsize, message_len, width, height):
 
 
 
-    return message_tensor
+    return message_tensor.to(device)
 
 def imshow(im1, im2, i):
     ax1 = plt.subplot(2,1,1)
