@@ -47,7 +47,7 @@ def main():
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
-    images, labels = dataiter.next()
+    images, labels = dataiter.next().to(device)
     # imshow(utils.make_grid(images))
 
     runner = RunModel()
