@@ -40,7 +40,7 @@ def main():
 
     #model = Net().to(device)
 
-    k = args["--k"]
+    k = args.k
     encoder = Encoder(k).to(device)
     decoder = Decoder(k).to(device)
     adversary = Adversary(k).to(device)
