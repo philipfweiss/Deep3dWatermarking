@@ -27,7 +27,7 @@ class Adversary(nn.Module):
         self.bn7 = nn.BatchNorm2d(10)
 
         self.fc1 = nn.Linear(640, 10)
-        self.fc2 = nn.Linear(10, 2)
+        self.fc2 = nn.Linear(10, 1)
 
     def forward(self, x):
 

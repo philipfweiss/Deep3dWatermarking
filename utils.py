@@ -40,7 +40,9 @@ class RunModel:
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
-            adversary_output = adversary(encoder_output)
+            adversary_output_false = adversary(encoder_output)
+            adversary_output_true = adversary(data)
+            #print(adversary_output_false.shape)
             ## Loss is a combination of distance from image to encoding
             ## And the loss of the answer.
             # loss = 10 * torch.mean(torch.abs(desiredOutput - torch.round(output)))
@@ -49,7 +51,8 @@ class RunModel:
 
             encoder_loss = torch.mean(torch.abs(data - encoder_output)) #encoder loss
             decoder_loss =  2 * torch.mean(torch.abs(desiredOutput - decoder_output)) #decoder loss
-            loss = encoder_loss + decoder_loss
+            adversary_loss = torch.mean(torch.abs(adversary_output_false)) + torch.mean(torch.abs(1-adversary_output_true))
+            loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
             optimizer.step()
 
@@ -61,9 +64,9 @@ class RunModel:
                 print(desiredOutput[0, :], decoder_output[0, :])
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f} \tDecoder L: {:.5f}'.format(
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item()))
+                    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
 
     def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
@@ -75,6 +78,8 @@ class RunModel:
                 data, target = data.to(device), target.to(device)
                 encoder_output = encoder(data)
                 decoder_output = decoder(encoder_output)
+                adversary_output_true = adversary(data)
+                adversary_output_false = adversary(encoder_output)
                 test_loss += F.cross_entropy(decoder_output, target, reduction='sum').item() # sum up batch loss
                 pred = decoder_output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
                 num_cor = pred.eq(target.view_as(pred)).sum().item()
