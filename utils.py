@@ -67,14 +67,10 @@ class RunModel:
                     yield data, encoder_output
 
                 print(desiredOutput[0, :], decoder_output[0, :])
-                self.train_losses.append((generator_loss.item(), classification_loss.item())) #(epoch * args.batch_size + batch_idx,
-                # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
+                self.train_losses.append((generator_loss.item(), classification_loss.item()))
                 print('Train Epoch: {} [{}/{} ({:.0f}%)] \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f} \tGenerator L: {:.5f} \tDiscriminator L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader),  encoder_loss.item(), decoder_loss.item(), adversary_loss.item(), generator_loss.item(), classification_loss.item()))
-                #print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  '.format(
-                #    epoch, batch_idx * len(data), len(train_loader.dataset),
-                #    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item())) #, decoder_loss.item(), adversary_loss.item()))
 
     def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
@@ -95,7 +91,6 @@ class RunModel:
                 print(num_cor)
                 correct += num_cor
         self.test_losses.append(test_loss)
-        # print(epoch, " reee ", test_loss)
 
 
 def createMessageTensor(batchsize, message_len, width, height):
