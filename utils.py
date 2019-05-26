@@ -44,14 +44,9 @@ class RunModel:
             adversary_output_false = adversary(encoder_output)
             adversary_output_true = adversary(data)
             #print(adversary_output_false.shape)
-            ## Loss is a combination of distance from image to encoding
-            ## And the loss of the answer.
-            # loss = 10 * torch.mean(torch.abs(desiredOutput - torch.round(output)))
-            #loss = 2 * torch.mean(torch.abs(desiredOutput - output))
-            #loss += torch.mean(torch.abs(encoding - data))
 
             decoder_loss = torch.mean(torch.log(desiredOutput - decoder_output)) #decoder loss
-            encoder_loss = -torch.mean(torch.log(adversary_output_false)) + decoder_loss #encoder loss
+            encoder_loss = torch.mean(torch.log(1 - adversary_output_false)) + decoder_loss #encoder loss
             adversary_loss = torch.mean(torch.log(adversary_output_true)) + torch.mean(torch.log(1-adversary_output_false))
 
             loss = encoder_loss + decoder_loss + adversary_loss
