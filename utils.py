@@ -46,6 +46,8 @@ class RunModel:
 
             N, C, W, H = data.shape
             messageTensor = createMessageTensor(N, args.k, H, W)
+            if (device == "cuda"):
+                messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0]
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
