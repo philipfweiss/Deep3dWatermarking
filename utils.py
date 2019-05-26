@@ -150,7 +150,7 @@ def getargs():
     parser.add_argument('--lr', type=float, default=1e-3, metavar='LR',
                         help='learning rate (default: 0.01)')
 
-    parser.add_argument('--k', type=float, default=10, metavar='LR',
+    parser.add_argument('--k', type=int, default=10, metavar='LR',
                         help='Bits in secret message')
 
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
