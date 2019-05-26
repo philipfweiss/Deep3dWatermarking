@@ -20,7 +20,7 @@ def main():
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     print("using cuda: ", use_cuda)
     torch.manual_seed(args.seed)
-    device = torch.device("cuda" if use_cuda else "cpu")
+    device = torch.device("cuda:0" if use_cuda else "cpu")
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
     ## Download the mnist datasets
@@ -40,14 +40,10 @@ def main():
 
     #model = Net().to(device)
 
-    if (device == "cuda"):
-        Encoder().cuda()
-        Decoder().cuda()
-        Adversary().cuda()
-    else:
-        encoder = Encoder().to(device)
-        decoder = Decoder().to(device)
-        adversary = Adversary().to(device)
+
+    encoder = Encoder().to(device)
+    decoder = Decoder().to(device)
+    adversary = Adversary().to(device)
     print(device)
     params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
     optimizer = optim.Adam(params, lr=args.lr)
