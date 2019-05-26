@@ -37,10 +37,7 @@ class RunModel:
         for batch_idx, (data, target) in enumerate(train_loader):
             print(device)
             # print(data.shape, target.shape, 'reeee')
-            if(device == "cuda"):
-                data, target = data.cuda(), target.cuda()
-            else:
-                data, target = data.to(device), target.to(device)
+            data, target = data.to(device), target.to(device)
 
 
             optimizer.zero_grad()
@@ -59,8 +56,8 @@ class RunModel:
             adversary_output_real = adversary(data)
 
             N = adversary_output_fake.size()[0]
-            true_labels = torch.ones(N)
-            false_labels = torch.zeros(N)
+            true_labels = torch.ones(N).to(device)
+            false_labels = torch.zeros(N).to(device)
 
             #print(adversary_output_false.shape)
 
