@@ -58,7 +58,7 @@ class RunModel:
 
             #print(adversary_output_false.shape)
 
-            decoder_loss = torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
+            decoder_loss = torch.mean(bce_loss(decoder_output, desiredOutput)) +  torch.mean(torch.abs(encoder_output - data))#decoder loss
             encoder_loss = torch.mean(bce_loss(adversary_output_fake, true_labels)) + decoder_loss #encoder loss
             adversary_loss = torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))
             loss = encoder_loss + decoder_loss + adversary_loss
