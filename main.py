@@ -42,11 +42,8 @@ def main():
     encoder = Encoder().to(device)
     decoder = Decoder().to(device)
     adversary = Adversary().to(device)
-    ## Change to adam
-    #optimizer = optim.Adam(model.parameters(), lr=args.lr)
-    optimizer = optim.Adam(encoder.parameters(), lr=args.lr)
-    optimizer = optim.Adam(decoder.parameters(), lr=args.lr)
-    optimizer = optim.Adam(adversary.parameters(), lr=args.lr)
+    params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
+    optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
     images, labels = dataiter.next()
