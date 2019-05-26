@@ -44,7 +44,6 @@ def main():
     encoder = Encoder().to(device)
     decoder = Decoder().to(device)
     adversary = Adversary().to(device)
-    print(device)
     params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data

@@ -35,7 +35,6 @@ class RunModel:
         decoder.train()
         adversary.train()
         for batch_idx, (data, target) in enumerate(train_loader):
-            print(device)
             # print(data.shape, target.shape, 'reeee')
             data, target = data.to(device), target.to(device)
 
@@ -48,8 +47,6 @@ class RunModel:
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0]
             #output, encoding = model(data, messageTensor)
-            print(next(encoder.parameters()).is_cuda)
-            print(data.is_cuda, messageTensor.is_cuda)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
             adversary_output_fake = adversary(encoder_output)
