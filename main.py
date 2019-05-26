@@ -40,14 +40,19 @@ def main():
 
     #model = Net().to(device)
 
-    encoder = Encoder().to(device)
-    decoder = Decoder().to(device)
-    adversary = Adversary().to(device)
+    if (device == "cuda"):
+        Encoder().cuda()
+        Decoder().cuda()
+        Adversary().cuda()
+    else:
+        encoder = Encoder().to(device)
+        decoder = Decoder().to(device)
+        adversary = Adversary().to(device)
     params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
-    images, labels = dataiter.next().to(device)
+    images, labels = dataiter.next()
     # imshow(utils.make_grid(images))
 
     runner = RunModel()

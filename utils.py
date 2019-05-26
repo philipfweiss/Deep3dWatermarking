@@ -36,7 +36,12 @@ class RunModel:
         adversary.train()
         for batch_idx, (data, target) in enumerate(train_loader):
             # print(data.shape, target.shape, 'reeee')
-            data, target = data.to(device), target.to(device)
+            if(device == "cuda"):
+                data, target = data.cuda(), target.cuda()
+            else:
+                data, target = data.to(device), target.to(device)
+
+
             optimizer.zero_grad()
 
             N, C, W, H = data.shape
