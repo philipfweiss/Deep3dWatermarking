@@ -26,8 +26,10 @@ class RunModel:
         plt.xlabel("Epoch")
         plt.show()
 
-    def train(self, args, model, device, train_loader, optimizer, epoch):
-        model.train()
+    def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
+        encoder.train()
+        decoder.train()
+        adversary.train()
         for batch_idx, (data, target) in enumerate(train_loader):
             # print(data.shape, target.shape, 'reeee')
             data, target = data.to(device), target.to(device)
@@ -36,41 +38,52 @@ class RunModel:
             N, C, W, H = data.shape
             messageTensor = createMessageTensor(N, args.k, H, W)
             desiredOutput = messageTensor[:, :, 0, 0]
-            output, encoding = model(data, messageTensor)
-
+            #output, encoding = model(data, messageTensor)
+            encoder_output = encoder(data, messageTensor)
+            decoder_output = decoder(encoder_output)
+            adversary_output_false = adversary(encoder_output)
+            adversary_output_true = adversary(data)
+            #print(adversary_output_false.shape)
             ## Loss is a combination of distance from image to encoding
             ## And the loss of the answer.
             # loss = 10 * torch.mean(torch.abs(desiredOutput - torch.round(output)))
-            loss = 2 * torch.mean(torch.abs(desiredOutput - output))
+            #loss = 2 * torch.mean(torch.abs(desiredOutput - output))
+            #loss += torch.mean(torch.abs(encoding - data))
 
-            loss += torch.mean(torch.abs(encoding - data))
-
+            encoder_loss = torch.mean(torch.abs(data - encoder_output)) #encoder loss
+            decoder_loss =  2 * torch.mean(torch.abs(desiredOutput - decoder_output)) #decoder loss
+            adversary_loss = torch.mean(torch.abs(adversary_output_false)) + torch.mean(torch.abs(1-adversary_output_true))
+            loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
             optimizer.step()
 
             if batch_idx % args.log_interval == 0:
                 if batch_idx % 50*args.log_interval == 0:
-                    yield data, encoding
+                    yield data, encoder_output
 
 
-                print(desiredOutput[0, :], output[0, :])
+                print(desiredOutput[0, :], decoder_output[0, :])
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
-                print(loss.item())
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item()))
+                    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
 
-    def test(self, args, model, device, test_loader, epoch):
-        model.eval()
+    def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
+        encoder.eval()
+        decoder.eval()
+        adversary.eval()
         test_loss = 0
         correct = 0
         with torch.no_grad():
             for data, target in test_loader:
                 data, target = data.to(device), target.to(device)
-                output = model(data)
-                test_loss += F.cross_entropy(output, target, reduction='sum').item() # sum up batch loss
-                pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+                encoder_output = encoder(data)
+                decoder_output = decoder(encoder_output)
+                adversary_output_true = adversary(data)
+                adversary_output_false = adversary(encoder_output)
+                test_loss += F.cross_entropy(decoder_output, target, reduction='sum').item() # sum up batch loss
+                pred = decoder_output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
                 num_cor = pred.eq(target.view_as(pred)).sum().item()
                 print(num_cor)
                 correct += num_cor
