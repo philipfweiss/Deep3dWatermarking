@@ -41,6 +41,7 @@ def main():
     #model = Net().to(device)
 
     if (device == "cuda"):
+        torch.set_default_tensor_type(torch.cuda.FloatTensor)
         Encoder().cuda()
         Decoder().cuda()
         Adversary().cuda()
