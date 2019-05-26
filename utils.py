@@ -125,7 +125,7 @@ def imshow(im1, im2, i):
     plt.title(f'Non-Encoded')
 
     im1 = im1 / 2 + 0.5     # unnormalize
-    npimg = im1.numpy()
+    npimg = im1.cpu().numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
 
     ax2 = plt.subplot(2,1,2)
@@ -136,7 +136,7 @@ def imshow(im1, im2, i):
 
 
     im2 = im2 / 2 + 0.5     # unnormalize
-    npimg2 = im2.numpy()
+    npimg2 = im2.cpu().numpy()
     plt.imshow(np.transpose(npimg2, (1, 2, 0)))
 
     plt.savefig(f'images/my_fig_{i}.pdf')
