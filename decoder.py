@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 import torch.nn.functional as F
 
 class Decoder(nn.Module):
-    def __init__(self):
+    def __init__(self, k):
         super(Decoder, self).__init__()
         self.pool = nn.MaxPool2d(2)
         self.conv1 = nn.Conv2d(3, 10, 3, 1, 1)
@@ -26,7 +26,7 @@ class Decoder(nn.Module):
         self.bn6 = nn.BatchNorm2d(10)
         self.bn7 = nn.BatchNorm2d(10)
 
-        self.fc1 = nn.Linear(640, 10)
+        self.fc1 = nn.Linear(640, k)
 
     def forward(self, x):
 

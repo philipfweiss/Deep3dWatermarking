@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 import torch.nn.functional as F
 
 class Encoder(nn.Module):
-    def __init__(self):
+    def __init__(self, k):
         super(Encoder, self).__init__()
         self.bn1 = nn.BatchNorm2d(3)
         self.bn2 = nn.BatchNorm2d(3)
@@ -19,8 +19,8 @@ class Encoder(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 3, 3, 1, 1)
         self.conv2 = nn.Conv2d(3, 3, 3, 1, 1)
-        self.conv3 = nn.Conv2d(13, 10, 3, 1, 1)
-        self.conv4 = nn.Conv2d(10, 3, 3, 1, 1)
+        self.conv3 = nn.Conv2d(13, k, 3, 1, 1)
+        self.conv4 = nn.Conv2d(k, 3, 3, 1, 1)
         self.conv5 = nn.Conv2d(3, 10, 3, 1, 1)
         self.conv6 = nn.Conv2d(10, 3, 3, 1, 1)
 

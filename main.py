@@ -40,10 +40,10 @@ def main():
 
     #model = Net().to(device)
 
-
-    encoder = Encoder().to(device)
-    decoder = Decoder().to(device)
-    adversary = Adversary().to(device)
+    k = args["--k"]
+    encoder = Encoder(k).to(device)
+    decoder = Decoder(k).to(device)
+    adversary = Adversary(k).to(device)
     params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data

@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 import torch.nn.functional as F
 
 class Adversary(nn.Module):
-    def __init__(self):
+    def __init__(self, k):
         super(Adversary, self).__init__()
         self.pool = nn.MaxPool2d(2)
         self.conv1 = nn.Conv2d(3, 10, 3, 1, 1)
