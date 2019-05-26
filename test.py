@@ -4,11 +4,12 @@ import numpy as np
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-
+ax.auto_scale_xyz([0, 60], [0, 60], [0, 60])
 vals = np.load("/Users/Lipman/Downloads/model_normalized-4.npy")
 print(vals.shape)
 
 i = 0
+q = 0
 
 for xidx, x in enumerate(vals):
     for yidx, y in enumerate(x):
@@ -17,7 +18,9 @@ for xidx, x in enumerate(vals):
             if i % 10000 == 0:
                 print(i)
             if z == 1.0:
-                ax.scatter(xidx, yidx, zidx, c='r', alpha=.25, marker='.', depthshade=True)
+                q += 1
+                if q % 1 == 0:
+                    ax.scatter(xidx, yidx, zidx, c='r', alpha=.25, marker='.', depthshade=True)
 
 ax.set_xlabel('X Label')
 ax.set_ylabel('Y Label')

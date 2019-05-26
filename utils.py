@@ -50,9 +50,10 @@ class RunModel:
             #loss = 2 * torch.mean(torch.abs(desiredOutput - output))
             #loss += torch.mean(torch.abs(encoding - data))
 
-            encoder_loss = torch.mean(torch.abs(data - encoder_output)) #encoder loss
-            decoder_loss =  2 * torch.mean(torch.abs(desiredOutput - decoder_output)) #decoder loss
-            adversary_loss = torch.mean(torch.abs(adversary_output_false)) + torch.mean(torch.abs(1-adversary_output_true))
+            decoder_loss = torch.mean(torch.log(desiredOutput - decoder_output)) #decoder loss
+            encoder_loss = -torch.mean(torch.log(adversary_output_false)) + decoder_loss #encoder loss
+            adversary_loss = torch.mean(torch.log(adversary_output_true)) + torch.mean(torch.log(1-adversary_output_false))
+
             loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
             optimizer.step()
