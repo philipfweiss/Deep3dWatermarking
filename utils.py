@@ -29,6 +29,7 @@ class RunModel:
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
         decoder.train()
+        adversary.train()
         for batch_idx, (data, target) in enumerate(train_loader):
             # print(data.shape, target.shape, 'reeee')
             data, target = data.to(device), target.to(device)
@@ -71,6 +72,7 @@ class RunModel:
     def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
         decoder.eval()
+        adversary.eval()
         test_loss = 0
         correct = 0
         with torch.no_grad():
