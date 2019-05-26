@@ -31,43 +31,50 @@ class RunModel:
         decoder.train()
         adversary.train()
         for batch_idx, (data, target) in enumerate(train_loader):
-            # print(data.shape, target.shape, 'reeee')
             data, target = data.to(device), target.to(device)
-            optimizer.zero_grad()
+            (encoder_optimizer,decoder_optimizer,adversary_optimizer) = optimizer
+            encoder_optimizer.zero_grad()
+            decoder_optimizer.zero_grad()
+            adversary_optimizer.zero_grad()
 
             N, C, W, H = data.shape
             messageTensor = createMessageTensor(N, args.k, H, W)
             desiredOutput = messageTensor[:, :, 0, 0]
-            #output, encoding = model(data, messageTensor)
+
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
             adversary_output_false = adversary(encoder_output)
             adversary_output_true = adversary(data)
-            #print(adversary_output_false.shape)
-            ## Loss is a combination of distance from image to encoding
-            ## And the loss of the answer.
-            # loss = 10 * torch.mean(torch.abs(desiredOutput - torch.round(output)))
-            #loss = 2 * torch.mean(torch.abs(desiredOutput - output))
-            #loss += torch.mean(torch.abs(encoding - data))
 
-            encoder_loss = torch.mean(torch.abs(data - encoder_output)) #encoder loss
-            decoder_loss =  2 * torch.mean(torch.abs(desiredOutput - decoder_output)) #decoder loss
-            adversary_loss = torch.mean(torch.abs(adversary_output_false)) + torch.mean(torch.abs(1-adversary_output_true))
-            loss = encoder_loss + decoder_loss + adversary_loss
-            loss.backward()
-            optimizer.step()
+            encoder_loss = torch.mean(torch.norm(data - encoder_output,2)/(C*H*W)) #encoder loss
+            decoder_loss =  torch.mean(torch.norm(desiredOutput - decoder_output,2)/args.k) #decoder loss
+            adversary_loss = torch.mean(torch.log(1-adversary_output_false))
+
+            gamma_e = 1
+            gamma_a = 1
+            generator_loss = gamma_e * encoder_loss +  decoder_loss + gamma_a * adversary_loss
+            classification_loss = torch.mean(torch.log(adversary_output_false)) + torch.mean(torch.log(1-adversary_output_true))
+
+            generator_loss.backward(retain_graph=True)
+            classification_loss.backward()
+
+            encoder_optimizer.step()
+            decoder_optimizer.step()
+            adversary_optimizer.step()
 
             if batch_idx % args.log_interval == 0:
                 if batch_idx % 50*args.log_interval == 0:
                     yield data, encoder_output
 
-
                 print(desiredOutput[0, :], decoder_output[0, :])
-                self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
+                self.train_losses.append((encoder_loss.item(), decoder_loss.item(), adversary_loss.item())) #(epoch * args.batch_size + batch_idx,
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
+                print('Train Epoch: {} [{}/{} ({:.0f}%)] \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
+                    100. * batch_idx / len(train_loader),  encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
+                #print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  '.format(
+                #    epoch, batch_idx * len(data), len(train_loader.dataset),
+                #    100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item())) #, decoder_loss.item(), adversary_loss.item()))
 
     def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
