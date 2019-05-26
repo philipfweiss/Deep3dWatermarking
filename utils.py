@@ -35,6 +35,7 @@ class RunModel:
         decoder.train()
         adversary.train()
         for batch_idx, (data, target) in enumerate(train_loader):
+            print(device)
             # print(data.shape, target.shape, 'reeee')
             if(device == "cuda"):
                 data, target = data.cuda(), target.cuda()
