@@ -78,10 +78,11 @@ class RunModel:
                 self.train_encoder_losses.append(encoder_loss.item())
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
+                self.visualize()
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
-        self.visualize()
+
 
     def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
