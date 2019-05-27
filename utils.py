@@ -16,19 +16,18 @@ def bce_loss(input, target):
 class RunModel:
     def __init__(self):
         self.train_losses = []
-        self.test_losses = []
+        self.train_decoder_losses = []
+        self.train_encoder_losses = []
+        self.train_adversary_losses = []
 
     def visualize(self):
-        plt.subplot(2,1,1)
         plt.title('Training Loss')
-        plt.plot(self.train_losses, 'o')
-        plt.xlabel("Iteration")
-
-        plt.subplot(2,1,2)
-        plt.title('Test Loss')
-        plt.plot(self.test_losses, 'ro')
+        plt.plot(self.train_losses, 'ro')
+        plt.plot(self.train_decoder_losses, 'bo')
+        plt.plot(self.train_encoder_losses, 'go')
+        plt.plot(self.train_adversary_losses, 'yo')
         plt.xlabel("Epoch")
-        plt.show()
+        plt.savefig(f'results/losses.pdf')
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
@@ -63,6 +62,7 @@ class RunModel:
             adversary_loss = torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))
 
 
+
             loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
             optimizer.step()
@@ -73,11 +73,15 @@ class RunModel:
 
 
                 print(desiredOutput[0, :], decoder_output[0, :])
+                self.train_decoder_losses.append(decoder_loss.item())
+                self.train_adversary_losses.append(adversary_loss.item())
+                self.train_encoder_losses.append(encoder_loss.item())
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
+        self.visualize()
 
     def test(self, args, encoder, decoder, adversary, device, test_loader, epoch):
         encoder.eval()
