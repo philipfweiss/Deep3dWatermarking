@@ -23,23 +23,24 @@ class Encoder(nn.Module):
         self.conv4 = nn.Conv2d(10, 3, 3, 1, 1)
         self.conv5 = nn.Conv2d(3, 10, 3, 1, 1)
         self.conv6 = nn.Conv2d(10, 3, 3, 1, 1)
+        self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
     def forward(self, x, message):
 
         ## Begin by encoding x with 2 conv-bn-relu blocks.
-        intermediate = F.relu(self.bn1(self.conv1(x)))
-        intermediate = F.relu(self.bn2(self.conv2(intermediate)))
+        intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
+        intermediate = self.leaky_relu(self.bn2(self.conv2(intermediate)))
 
         #intermediate = x.clone()
         ## Concat x and message
         concated = torch.cat((intermediate, message), 1)
 
         ## more conv layers
-        encoded = F.relu(self.bn3(self.conv3(concated)))
-        encoded = F.relu(self.bn4(self.conv4(encoded)))
+        encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
+        encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
         skip_connection = encoded + x
-        final = F.relu(self.bn5(self.conv5(skip_connection)))
-        final = F.relu(self.bn6(self.conv6(final)))
+        final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
+        final = self.leaky_relu(self.bn6(self.conv6(final)))
 
         return final

@@ -61,6 +61,8 @@ class RunModel:
             decoder_loss = torch.mean(bce_loss(decoder_output, desiredOutput)) +  torch.mean(torch.abs(encoder_output - data))#decoder loss
             encoder_loss = torch.mean(bce_loss(adversary_output_fake, true_labels)) + decoder_loss #encoder loss
             adversary_loss = torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))
+
+
             loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
             optimizer.step()
@@ -136,7 +138,7 @@ def imshow(im1, im2, i):
     npimg2 = im2.cpu().numpy()
     plt.imshow(np.transpose(npimg2, (1, 2, 0)))
 
-    plt.savefig(f'images/my_fig_{i}.pdf')
+    plt.savefig(f'images/x_my_fig_{i}.pdf')
 
 
 def getargs():
