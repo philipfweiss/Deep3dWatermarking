@@ -3,7 +3,7 @@ from model import Net
 from encoder import Encoder
 from decoder import Decoder
 from adversary import Adversary
-
+from pprint import pprint
 import argparse
 import torch
 import torch.nn as nn
@@ -16,6 +16,8 @@ from torchvision import datasets, transforms, utils
 
 
 def main():
+    # pprint(vars(datasets))
+
     args = getargs()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     print("using cuda: ", use_cuda)

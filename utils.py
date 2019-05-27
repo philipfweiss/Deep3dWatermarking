@@ -21,6 +21,7 @@ class RunModel:
         self.train_adversary_losses = []
 
     def visualize(self):
+        plt.figure(1)
         plt.title('Training Loss')
         plt.plot(self.train_losses, 'ro')
         plt.plot(self.train_decoder_losses, 'bo')
@@ -122,6 +123,7 @@ def createMessageTensor(batchsize, message_len, width, height, device):
     return message_tensor.to(device)
 
 def imshow(im1, im2, i):
+    plt.figure(2)
     ax1 = plt.subplot(2,1,1)
     ax1.set_xticklabels([])
     ax1.set_yticklabels([])
