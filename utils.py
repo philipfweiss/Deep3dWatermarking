@@ -23,10 +23,10 @@ class RunModel:
     def visualize(self):
         plt.figure(1)
         plt.title('Training Loss')
-        plt.plot(self.train_losses, 'ro')
-        plt.plot(self.train_decoder_losses, 'bo')
-        plt.plot(self.train_encoder_losses, 'go')
-        plt.plot(self.train_adversary_losses, 'yo')
+        plt.plot(self.train_losses, 'r-')
+        plt.plot(self.train_decoder_losses, 'b-')
+        plt.plot(self.train_encoder_losses, 'g-')
+        plt.plot(self.train_adversary_losses, 'y-')
         plt.xlabel("Epoch")
         plt.savefig(f'results/losses.pdf')
 
