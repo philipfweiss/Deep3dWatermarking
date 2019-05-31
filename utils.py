@@ -63,7 +63,7 @@ class RunModel:
             false_labels = torch.zeros(N).to(device)
 
             decoderpredictions = decoder_output.round()
-            numCorrect = torch.sum(decoderpredictions == messageTensor) / N
+            numCorrect = torch.sum(decoderpredictions == desiredOutput) / N
 
             #print(adversary_output_false.shape)
 
