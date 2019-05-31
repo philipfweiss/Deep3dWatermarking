@@ -19,14 +19,20 @@ class RunModel:
         self.train_decoder_losses = []
         self.train_encoder_losses = []
         self.train_adversary_losses = []
+        self.train_image_gradients = []
+        self.bits_correct = []
+        self.total_bits = []
 
     def visualize(self):
         plt.figure(1)
         plt.title('Training Loss')
-        plt.plot(self.train_losses, 'r-')
-        plt.plot(self.train_decoder_losses, 'b-')
-        plt.plot(self.train_encoder_losses, 'g-')
-        plt.plot(self.train_adversary_losses, 'y-')
+        plt.plot(self.train_losses, 'r-', label='Total Loss')
+        plt.plot(self.train_decoder_losses, 'b-', label='Decoder Loss')
+        plt.plot(self.train_encoder_losses, 'g-', label='Encoder Loss')
+        plt.plot(self.train_adversary_losses, 'y-', label='Adversary Loss')
+        plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
+        plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
+        plt.legend()
         plt.xlabel("Epoch")
         plt.savefig(f'results/losses.pdf')
 
@@ -56,13 +62,19 @@ class RunModel:
             true_labels = torch.ones(N).to(device)
             false_labels = torch.zeros(N).to(device)
 
+            decoderpredictions = decoder_output.round()
+            numCorrect = torch.sum(decoderpredictions == messageTensor) / N
+
             #print(adversary_output_false.shape)
 
-            decoder_loss = torch.mean(bce_loss(decoder_output, desiredOutput)) +  (encoder_output - data).norm(2) / (3 * H * W)#decoder loss
-            encoder_loss = torch.mean(bce_loss(adversary_output_fake, true_labels)) + decoder_loss #encoder loss
-            adversary_loss = torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))
+            a, b, c, e, f =  0.5, 0.25, 0.125, 0.0625, 0.0625
+            decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
+            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (3 * H * W)#encoder loss
+            adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
 
+            # TODO put dropout
 
+            image_grad = torch.sum(torch.abs(data.grad))
 
             loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
@@ -78,7 +90,10 @@ class RunModel:
                 self.train_adversary_losses.append(adversary_loss.item())
                 self.train_encoder_losses.append(encoder_loss.item())
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
-                # print("Num correct: %d / %d" % (num_cor, args.batch_size) )
+                self.train_image_gradients.append(image_grad.item())
+                self.bits_correct.append(numCorrect.item())
+                self.total_bits.append(args.k)
+                print("Num correct: %d / %d" % (sum(self.bits_correct), sum(self.total_bits)) )
                 self.visualize()
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
