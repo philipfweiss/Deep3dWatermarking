@@ -50,8 +50,8 @@ class RunModel:
             decoder_loss =  torch.mean(torch.norm(desiredOutput - decoder_output,2)/args.k) #decoder loss
             adversary_loss = torch.mean(torch.log(1-adversary_output_false))
 
-            gamma_e = 1
-            gamma_a = 1
+            gamma_e = 0.7
+            gamma_a = 0.001
             generator_loss = gamma_e * encoder_loss +  decoder_loss + gamma_a * adversary_loss
             classification_loss = torch.mean(torch.log(adversary_output_false)) + torch.mean(torch.log(1-adversary_output_true))
 
