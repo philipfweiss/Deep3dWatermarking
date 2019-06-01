@@ -74,7 +74,7 @@ class RunModel:
 
             # TODO put dropout
 
-            image_grad = torch.sum(torch.abs(data.grad))
+            image_grad = 0#torch.sum(torch.abs(data.grad))
 
             loss = encoder_loss + decoder_loss + adversary_loss
             loss.backward()
