@@ -93,7 +93,7 @@ class RunModel:
                 self.train_encoder_losses.append(encoder_loss.item() / (b + c))
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 self.train_image_gradients.append(image_grad)
-                self.bits_correct.append(numCorrect.item())
+                self.bits_correct.append(numCorrect)
                 self.total_bits.append(args.k)
                 self.visualize()
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
