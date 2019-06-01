@@ -88,7 +88,7 @@ class RunModel:
                     yield data, encoder_output
 
 
-                print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (sum(self.bits_correct) * 1.0 / sum(self.total_bits)) )
+                print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (numCorrect / args.k) )
                 self.train_decoder_losses.append(decoder_loss.item())
                 self.train_adversary_losses.append(adversary_loss.item())
                 self.train_encoder_losses.append(encoder_loss.item())
