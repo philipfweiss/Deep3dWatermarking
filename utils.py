@@ -36,7 +36,7 @@ class RunModel:
         handles, labels = plt.gca().get_legend_handles_labels()
         by_label = OrderedDict(zip(labels, handles))
         plt.legend(by_label.values(), by_label.keys())
-        plt.xlabel("Epoch")
+        plt.xlabel("Batch")
         plt.savefig(f'results/losses.pdf')
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
