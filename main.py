@@ -10,14 +10,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, utils
-
+from pointCloudDataset import PointCloudDataset
+from multiprocessing import Pool
 ## Follow code here:
 ## https://github.com/pytorch/examples/blob/master/mnist/main.py#L2
 
 
 def main():
-    # pprint(vars(datasets))
-
     args = getargs()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     print("using cuda: ", use_cuda)
@@ -25,22 +24,13 @@ def main():
     device = torch.device("cuda:0" if use_cuda else "cpu")
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
-    ## Download the mnist datasets
+    dset = PointCloudDataset()
     train_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10('../data', train=True, download=True,
-                       transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
+        dset,
         batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10('../data', train=False, transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
+        dset,
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
-
-    #model = Net().to(device)
 
     k = args.k
     encoder = Encoder(k).to(device)
@@ -50,17 +40,16 @@ def main():
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
-    images, labels = dataiter.next()
-    # imshow(utils.make_grid(images))
 
     runner = RunModel()
     for epoch in range(args.epochs):
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
-                imshow(utils.make_grid(data[0:40, :, :, :]), utils.make_grid(encoding[0:40, :, :, :]), epoch*10 + i)
+                imshow(data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch, i)
 
     runner.visualize()
+
 
     if (args.save_model):
         torch.save(encoder.state_dict(),"encoder.pt")

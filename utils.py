@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 from collections import OrderedDict
+from printVoxels import draw_voxels
 
 def bce_loss(input, target):
     max_val = (-input).clamp(min=0)
@@ -38,25 +39,28 @@ class RunModel:
         plt.legend(by_label.values(), by_label.keys())
         plt.xlabel("Batch")
         plt.savefig(f'results/losses.pdf')
+        print("All Done Visualizing Losses")
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
         decoder.train()
         adversary.train()
-        for batch_idx, (data, target) in enumerate(train_loader):
-            # print(data.shape, target.shape, 'reeee')
-            data, target = data.to(device), target.to(device)
 
-
+        for batch_idx, data in enumerate(train_loader):
+            data = data.to(device)
             optimizer.zero_grad()
 
-            N, C, W, H = data.shape
-            messageTensor = createMessageTensor(N, args.k, H, W, device)
+            N, C, D, W, H = data.shape
+
+            messageTensor = createMessageTensor(N, args.k, D, W, H, device)
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
-            desiredOutput = messageTensor[:, :, 0, 0]
+            desiredOutput = messageTensor[:, :, 0, 0, 0]
+
+            mask = torch.ceil(data)
+            #mask = data
             #output, encoding = model(data, messageTensor)
-            encoder_output = encoder(data, messageTensor)
+            encoder_output = encoder(data, messageTensor, mask)
             decoder_output = decoder(encoder_output)
             adversary_output_fake = adversary(encoder_output)
             adversary_output_real = adversary(data)
@@ -68,11 +72,9 @@ class RunModel:
             decoderpredictions = decoder_output.round()
             numCorrect = torch.sum(decoderpredictions == desiredOutput) / N
 
-            #print(adversary_output_false.shape)
-
             a, b, c, e, f =  1, 0.70, 0.001, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
-            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (3 * H * W)#encoder loss
+            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (1 * D * H * W )#encoder loss
             adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
 
             # TODO put dropout
@@ -124,46 +126,53 @@ class RunModel:
         # print(epoch, " reee ", test_loss)
 
 
-def createMessageTensor(batchsize, message_len, width, height, device):
-
-    message_tensor = torch.zeros(batchsize, message_len, width, height)
+def createMessageTensor(batchsize, message_len, depth, width, height, device):
+    message_tensor = torch.zeros(batchsize, message_len, depth, width, height)
     for b in range(batchsize):
         message = np.random.randint(2, size=message_len) # defaults to 10
-        # if b == 0:
-        #     print(message, 'mpp')
-        for w in range(width):
-            for h in range(height):
-                message_tensor[b, :, w, h] = torch.tensor(message)
-
-
+        tiled_message = torch.tensor(
+            np.swapaxes(
+                np.broadcast_to(message, (height, depth, width, message_len)),
+                0, 3
+            )
+        )
+        message_tensor[b, :, :, :, :] = tiled_message
 
     return message_tensor.to(device)
 
-def imshow(im1, im2, i):
-    plt.figure(2)
-    ax1 = plt.subplot(2,1,1)
-    ax1.set_xticklabels([])
-    ax1.set_yticklabels([])
+def imshow(im1, im2, im3, im4, e, i):
+    im1 = im1.cpu().detach().numpy()
+    im2 = im2.cpu().detach().numpy()
+    im3 = im3.cpu().detach().numpy()
+    im4 = im4.cpu().detach().numpy()
 
-    plt.title(f'Non-Encoded')
+    fig = plt.figure(2)
+    ax = fig.add_subplot(2, 2, 1)
+    draw_voxels(im1, ax)
+    ax = fig.add_subplot(2, 2, 2)
+    draw_voxels(im2, ax)
+    ax = fig.add_subplot(2, 2, 3)
+    draw_voxels(im3, ax)
+    ax = fig.add_subplot(2, 2, 4)
+    draw_voxels(im4, ax)
 
-    im1 = im1 / 2 + 0.5     # unnormalize
-    npimg = im1.cpu().numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.title(f'Examples')
 
-    ax2 = plt.subplot(2,1,2)
-    ax2.set_xticklabels([])
-    ax2.set_yticklabels([])
+    plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
 
-    plt.title(f'Encoded')
+    print('completed writing ', f'images/x_my_fig_{e}_{i}.pdf')
 
 
-    im2 = im2 / 2 + 0.5     # unnormalize
-    npimg2 = im2.cpu().numpy()
-    plt.imshow(np.transpose(npimg2, (1, 2, 0)))
+def pw__expirement(data):
+    front = data[0, 0, :, :, :].sum(1).detach().numpy()
+    img = plt.imshow(front)
+    plt.show()
 
-    plt.savefig(f'images/x_my_fig_{i}.pdf')
-
+    # fig = plt.figure(2)
+    # ax = fig.add_subplot(2, 2, 1, projection='3d')
+    # draw_voxels(data, ax)
+    # plt.show()
+    # print(data.shape)
 
 def getargs():
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
