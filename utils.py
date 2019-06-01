@@ -155,6 +155,8 @@ def imshow(im1, im2, im3, im4, i):
 
     plt.savefig(f'images/x_my_fig_{i}.pdf')
 
+    print('completed writing ', f'images/x_my_fig_{i}.pdf')
+
 
 def getargs():
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')

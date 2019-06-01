@@ -11,6 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, utils
 from pointCloudDataset import PointCloudDataset
+from threading import Thread
 ## Follow code here:
 ## https://github.com/pytorch/examples/blob/master/mnist/main.py#L2
 
@@ -53,7 +54,8 @@ def main():
             with torch.no_grad():
                 pass
                 # concat = torch.cat((data, encoding), 0)
-                imshow(data[0, :, :, :], data[1, :, :, :], encoding[0, :, :, :], encoding[1, :, :, :], epoch*10 + i)
+                image_rendering_thread = Thread(target=imshow, args=[data[0, :, :, :], data[1, :, :, :], encoding[0, :, :, :], encoding[1, :, :, :], epoch*10 + i])
+                image_rendering_thread.start()
 
     runner.visualize()
 
