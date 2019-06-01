@@ -8,6 +8,7 @@ from collections import *
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+from collections import OrderedDict
 
 def bce_loss(input, target):
     max_val = (-input).clamp(min=0)
@@ -32,7 +33,9 @@ class RunModel:
         plt.plot(self.train_adversary_losses, 'y-', label='Adversary Loss')
         plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
         plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
-        plt.legend()
+        handles, labels = plt.gca().get_legend_handles_labels()
+        by_label = OrderedDict(zip(labels, handles))
+        plt.legend(by_label.values(), by_label.keys())
         plt.xlabel("Epoch")
         plt.savefig(f'results/losses.pdf')
 
