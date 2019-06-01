@@ -56,7 +56,7 @@ class RunModel:
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
-            
+
             mask = torch.ceil(data)
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor, mask)
@@ -161,6 +161,17 @@ def imshow(im1, im2, im3, im4, i):
 
     print('completed writing ', f'images/x_my_fig_{i}.pdf')
 
+
+def pw__expirement(data):
+    front = data[0, 0, :, :, :].sum(1).detach().numpy()
+    img = plt.imshow(front)
+    plt.show()
+
+    # fig = plt.figure(2)
+    # ax = fig.add_subplot(2, 2, 1, projection='3d')
+    # draw_voxels(data, ax)
+    # plt.show()
+    # print(data.shape)
 
 def getargs():
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
