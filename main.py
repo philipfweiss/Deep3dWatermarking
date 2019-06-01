@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, utils
-
+from pointCloudDataset import PointCloudDataset
 ## Follow code here:
 ## https://github.com/pytorch/examples/blob/master/mnist/main.py#L2
 
@@ -27,17 +27,10 @@ def main():
 
     ## Download the mnist datasets
     train_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10('../data', train=True, download=True,
-                       transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
+        PointCloudDataset,
         batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10('../data', train=False, transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
+        PointCloudDataset,
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
     #model = Net().to(device)
@@ -50,7 +43,6 @@ def main():
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
-    images, labels = dataiter.next()
     # imshow(utils.make_grid(images))
 
     runner = RunModel()
