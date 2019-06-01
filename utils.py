@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 from collections import OrderedDict
+from printVoxels import draw_voxels
 
 def bce_loss(input, target):
     max_val = (-input).clamp(min=0)
@@ -137,28 +138,23 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
 
     return message_tensor.to(device)
 
-def imshow(im1, im2, i):
-    plt.figure(2)
-    ax1 = plt.subplot(2,1,1)
-    ax1.set_xticklabels([])
-    ax1.set_yticklabels([])
+def imshow(im1, im2, im3, im4, i):
+    im1 = im1.cpu().numpy()
+    im2 = im2.cpu().numpy()
+    im3 = im3.cpu().numpy()
+    im4 = im4.cpu().numpy()
 
-    plt.title(f'Non-Encoded')
+    fig = plt.figure(2)
+    ax = fig.add_subplot(2, 2, 1, projection='3d')
+    draw_voxels(im1, ax)
+    ax = fig.add_subplot(2, 2, 2, projection='3d')
+    draw_voxels(im2, ax)
+    ax = fig.add_subplot(2, 2, 3, projection='3d')
+    draw_voxels(im3, ax)
+    ax = fig.add_subplot(2, 2, 4, projection='3d')
+    draw_voxels(im4, ax)
 
-    im1 = im1 / 2 + 0.5     # unnormalize
-    npimg = im1.cpu().numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-
-    ax2 = plt.subplot(2,1,2)
-    ax2.set_xticklabels([])
-    ax2.set_yticklabels([])
-
-    plt.title(f'Encoded')
-
-
-    im2 = im2 / 2 + 0.5     # unnormalize
-    npimg2 = im2.cpu().numpy()
-    plt.imshow(np.transpose(npimg2, (1, 2, 0)))
+    plt.title(f'Examples')
 
     plt.savefig(f'images/x_my_fig_{i}.pdf')
 

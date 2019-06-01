@@ -54,7 +54,7 @@ def main():
             with torch.no_grad():
                 pass
                 # concat = torch.cat((data, encoding), 0)
-                #imshow(utils.make_grid(data[0:40, :, :, :]), utils.make_grid(encoding[0:40, :, :, :]), epoch*10 + i)
+                imshow(data[0, :, :, :], data[1, :, :, :], encoding[0, :, :, :], encoding[1, :, :, :], epoch*10 + i)
 
     runner.visualize()
 
