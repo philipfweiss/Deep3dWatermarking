@@ -58,7 +58,8 @@ class RunModel:
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
             mask = torch.ceil(data)
-            
+            print(mask)
+
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor, mask)
             decoder_output = decoder(encoder_output)
