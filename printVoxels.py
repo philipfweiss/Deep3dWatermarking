@@ -4,25 +4,25 @@ import numpy as np
 from numpy import *
 from mpl_toolkits.mplot3d import Axes3D
 
+
+
+def draw_voxels(data, fig):
+    def make_ax(grid=False):
+        ax = fig.gca(projection='3d')
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.set_zlabel("z")
+        ax.grid(grid)
+        return ax
+
+    filled = data[0]
+
+    ax = make_ax(True)
+    ax.view_init(30, 145)
+    ax.voxels(filled, facecolors='#1f77b430', edgecolors='gray')
+
 data = array([np.load("/Users/Lipman/Downloads/model_normalized-4.npy")])
-data = data[30:32, 30:32, 30:32]
-def make_ax(grid=False):
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
-    ax.set_zlabel("z")
-    ax.grid(grid)
-    return ax
-
-filled = np.array([
-    [[1, 0, 1], [0, 0, 1], [0, 1, 0]],
-    [[0, 1, 1], [1, 0, 0], [1, 0, 1]],
-    [[1, 1, 0], [1, 1, 1], [0, 0, 0]]
-])
-
-ax = make_ax(True)
-ax.voxels(filled, edgecolors='gray')
+fig = plt.figure()
+draw_voxels(data, fig)
 plt.show()
 
-# printVoxels()
