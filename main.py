@@ -57,8 +57,9 @@ def main():
                 pass
                 print(data.shape, 'ree')
                 # concat = torch.cat((data, encoding), 0)
-                image_rendering_thread = Thread(target=imshow, args=[data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
-                image_rendering_thread.start()
+                if epoch % 20 == 0:
+                    image_rendering_thread = Thread(target=imshow, args=[data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
+                    image_rendering_thread.start()
 
     runner.visualize()
 
