@@ -85,7 +85,7 @@ class RunModel:
                     yield data, encoder_output
 
 
-                print(desiredOutput[0, :], decoder_output[0, :])
+                print(desiredOutput[0, :], decoder_output[0, :], "Total Num correct: %d / %d" % (sum(self.bits_correct), sum(self.total_bits)) )
                 self.train_decoder_losses.append(decoder_loss.item())
                 self.train_adversary_losses.append(adversary_loss.item())
                 self.train_encoder_losses.append(encoder_loss.item())
@@ -93,7 +93,6 @@ class RunModel:
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect.item())
                 self.total_bits.append(args.k)
-                print("Num correct: %d / %d" % (sum(self.bits_correct), sum(self.total_bits)) )
                 self.visualize()
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
