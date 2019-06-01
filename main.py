@@ -27,12 +27,13 @@ def main():
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
     ## Download the mnist datasets
-    print(args)
+
+    dset = PointCloudDataset()
     train_loader = torch.utils.data.DataLoader(
-        PointCloudDataset,
+        dset,
         batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
-        PointCloudDataset,
+        dset,
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
     #model = Net().to(device)
@@ -50,11 +51,13 @@ def main():
 
     runner = RunModel()
     for epoch in range(args.epochs):
+        print(epoch)
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 pass
+                print(data.shape, 'ree')
                 # concat = torch.cat((data, encoding), 0)
-                image_rendering_thread = Thread(target=imshow, args=[data[0, :, :, :], data[1, :, :, :], encoding[0, :, :, :], encoding[1, :, :, :], epoch*10 + i])
+                image_rendering_thread = Thread(target=imshow, args=[data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
                 image_rendering_thread.start()
 
     runner.visualize()
