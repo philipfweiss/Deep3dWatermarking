@@ -57,9 +57,9 @@ class RunModel:
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
-            print(desiredOutput.shape, 'fuck')
+            mask = data
             #output, encoding = model(data, messageTensor)
-            encoder_output = encoder(data, messageTensor)
+            encoder_output = encoder(data, messageTensor, mask)
             decoder_output = decoder(encoder_output)
             adversary_output_fake = adversary(encoder_output)
             adversary_output_real = adversary(data)

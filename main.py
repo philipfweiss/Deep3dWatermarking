@@ -16,8 +16,6 @@ from pointCloudDataset import PointCloudDataset
 
 
 def main():
-    # pprint(vars(datasets))
-
     args = getargs()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     print("using cuda: ", use_cuda)
@@ -35,8 +33,6 @@ def main():
         dset,
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
-    #model = Net().to(device)
-
     k = args.k
     encoder = Encoder(k).to(device)
     decoder = Decoder(k).to(device)
@@ -45,15 +41,12 @@ def main():
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
-    print(dataiter)
-    # imshow(utils.make_grid(images))
 
     runner = RunModel()
     for epoch in range(args.epochs):
         print(epoch)
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
-                pass
                 print(data.shape, 'ree')
                 # concat = torch.cat((data, encoding), 0)
                 imshow(data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i)

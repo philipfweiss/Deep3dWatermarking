@@ -25,7 +25,7 @@ class Encoder(nn.Module):
         self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
-    def forward(self, x, message):
+    def forward(self, x, message, mask):
 
         ## Begin by encoding x with 2 conv-bn-relu blocks.
         intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
@@ -42,5 +42,7 @@ class Encoder(nn.Module):
         skip_connection = encoded + x
         final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
         final = self.leaky_relu(self.bn6(self.conv6(final)))
+
+        final *= mask
 
         return final
