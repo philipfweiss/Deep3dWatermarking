@@ -10,19 +10,19 @@ import torch.nn.functional as F
 class Encoder(nn.Module):
     def __init__(self, k):
         super(Encoder, self).__init__()
-        self.bn1 = nn.BatchNorm2d(3)
-        self.bn2 = nn.BatchNorm2d(3)
-        self.bn3 = nn.BatchNorm2d(10)
-        self.bn4 = nn.BatchNorm2d(3)
-        self.bn5 = nn.BatchNorm2d(10)
-        self.bn6 = nn.BatchNorm2d(3)
+        self.bn1 = nn.BatchNorm3d(1)
+        self.bn2 = nn.BatchNorm3d(1)
+        self.bn3 = nn.BatchNorm3d(10)
+        self.bn4 = nn.BatchNorm3d(1)
+        self.bn5 = nn.BatchNorm3d(10)
+        self.bn6 = nn.BatchNorm3d(1)
 
-        self.conv1 = nn.Conv2d(3, 3, 3, 1, 1)
-        self.conv2 = nn.Conv2d(3, 3, 3, 1, 1)
-        self.conv3 = nn.Conv2d(3+k, 10, 3, 1, 1)
-        self.conv4 = nn.Conv2d(10, 3, 3, 1, 1)
-        self.conv5 = nn.Conv2d(3, 10, 3, 1, 1)
-        self.conv6 = nn.Conv2d(10, 3, 3, 1, 1)
+        self.conv1 = nn.Conv3d(1, 1, 3, 1, 1)
+        self.conv2 = nn.Conv3d(1, 1, 3, 1, 1)
+        self.conv3 = nn.Conv3d(1+k, 10, 3, 1, 1)
+        self.conv4 = nn.Conv3d(10, 1, 3, 1, 1)
+        self.conv5 = nn.Conv3d(1, 10, 3, 1, 1)
+        self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
     def forward(self, x, message):

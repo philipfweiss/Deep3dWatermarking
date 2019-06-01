@@ -50,11 +50,11 @@ class RunModel:
 
             optimizer.zero_grad()
 
-            N, C, W, H = data.shape
-            messageTensor = createMessageTensor(N, args.k, H, W, device)
+            N, C, D, W, H = data.shape
+            messageTensor = createMessageTensor(N, args.k, D, H, W, device)
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
-            desiredOutput = messageTensor[:, :, 0, 0]
+            desiredOutput = messageTensor[:, :, 0, 0, 0]
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
@@ -124,16 +124,15 @@ class RunModel:
         # print(epoch, " reee ", test_loss)
 
 
-def createMessageTensor(batchsize, message_len, width, height, device):
+def createMessageTensor(batchsize, message_len, depth, width, height, device):
 
-    message_tensor = torch.zeros(batchsize, message_len, width, height)
+    message_tensor = torch.zeros(batchsize, message_len, depth, width, height)
     for b in range(batchsize):
         message = np.random.randint(2, size=message_len) # defaults to 10
-        # if b == 0:
-        #     print(message, 'mpp')
-        for w in range(width):
-            for h in range(height):
-                message_tensor[b, :, w, h] = torch.tensor(message)
+        for d in range(depth):
+            for w in range(width):
+                for h in range(height):
+                    message_tensor[b, :, d, w, h] = torch.tensor(message)
 
 
 
