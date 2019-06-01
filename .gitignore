@@ -3,3 +3,4 @@ images/
 data/
 .ipynb_checkpoints/
 *.pt
+results/
