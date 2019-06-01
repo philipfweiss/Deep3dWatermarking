@@ -56,7 +56,10 @@ def main():
                 # concat = torch.cat((data, encoding), 0)
                 pool.apply_async(imshow, [data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
 
+    pool.close()
+    pool.join()
     runner.visualize()
+
 
     if (args.save_model):
         torch.save(encoder.state_dict(),"encoder.pt")
