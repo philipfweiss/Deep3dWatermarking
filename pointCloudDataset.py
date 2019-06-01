@@ -34,7 +34,7 @@ class PointCloudDataset(Dataset):
         #print('foo')
         object = self.objects.__getitem__(idx)
         #object = self.objects.__getitem__(0)
-        obj_file_name = os.path.join(dataset_folder, object)#, "models", np_file_format)
+        obj_file_name = os.path.join(dataset_folder, object, "models", np_file_format)
         numpy_file = np.load(obj_file_name)
         if self.use_cuda:
             tensor = torch.from_numpy(numpy_file).float().cuda()
