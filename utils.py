@@ -43,13 +43,16 @@ class RunModel:
         encoder.train()
         decoder.train()
         adversary.train()
-        for batch_idx, (data, target) in enumerate(train_loader):
+        for batch_idx, data in enumerate(train_loader):
+            print(data.shape, 'foo')
             # print(data.shape, target.shape, 'reeee')
-            data, target = data.to(device), target.to(device)
+            #data, target = data.to(device), target.to(device)
 
             optimizer.zero_grad()
 
-            N, C, D, W, H = data.shape
+            N, D, H, W = data.shape
+            C = 1
+
             messageTensor = createMessageTensor(N, args.k, D, H, W, device)
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
