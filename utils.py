@@ -69,14 +69,12 @@ class RunModel:
             false_labels = torch.zeros(N).to(device)
 
             decoderpredictions = decoder_output.round()
-            numCorrect = torch.sum(decoderpredictions == desiredOutput) / float(N)
+            numCorrect = torch.sum(decoderpredictions == desiredOutput).item() / float(N)
 
-            a, b, c, e, f =  1, 0.70, 0.001, 0.001, 0.001
+            a, b, c, e, f =  1, 0.7, 0.2, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
             encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (1 * D * H * W )#encoder loss
             adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
-
-            # TODO put dropout
 
             image_grad = 0#torch.sum(torch.abs(data.grad))
 
