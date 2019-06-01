@@ -90,7 +90,7 @@ class RunModel:
                 self.train_adversary_losses.append(adversary_loss.item())
                 self.train_encoder_losses.append(encoder_loss.item())
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
-                self.train_image_gradients.append(image_grad.item())
+                self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect.item())
                 self.total_bits.append(args.k)
                 print("Num correct: %d / %d" % (sum(self.bits_correct), sum(self.total_bits)) )
