@@ -40,7 +40,8 @@ class RunModel:
         plt.legend(by_label.values(), by_label.keys())
         plt.xlabel("Batch")
         plt.savefig(f'results/losses.pdf')
-
+        print("All Done Visualizing Losses")
+        
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
         decoder.train()
@@ -56,8 +57,9 @@ class RunModel:
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
-            
+
             mask = torch.ceil(data)
+            #mask = data
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor, mask)
             decoder_output = decoder(encoder_output)
