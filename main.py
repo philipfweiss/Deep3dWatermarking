@@ -49,7 +49,6 @@ def main():
 
     runner = RunModel()
     for epoch in range(args.epochs):
-        print(epoch)
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 pass

@@ -45,10 +45,7 @@ class RunModel:
         decoder.train()
         adversary.train()
         for batch_idx, data in enumerate(train_loader):
-            print(data.shape, 'foo')
-            # print(data.shape, target.shape, 'reeee')
-            #data, target = data.to(device), target.to(device)
-
+            data = data.to(device)
             optimizer.zero_grad()
 
             N, C, D, W, H = data.shape
@@ -57,7 +54,6 @@ class RunModel:
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
-            print(desiredOutput.shape, 'fuck')
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
@@ -143,7 +139,6 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
 
 def imshow(im1, im2, im3, im4, i):
     im1 = im1.cpu().detach().numpy()
-    print(im1.shape, 'xx')
     im2 = im2.cpu().detach().numpy()
     im3 = im3.cpu().detach().numpy()
     im4 = im4.cpu().detach().numpy()
