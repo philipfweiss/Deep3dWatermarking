@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 dataset_folder = "/home/jlipman500/ShapeNetCore.slice"
-dataset_folder = "dataset"
+dataset_folder = "dataset/"
 np_file_format = "model_normalized.npy"
 
 class PointCloudDataset(Dataset):

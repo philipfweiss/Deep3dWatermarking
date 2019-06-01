@@ -148,13 +148,13 @@ def imshow(im1, im2, im3, im4, e, i):
     im4 = im4.cpu().detach().numpy()
 
     fig = plt.figure(2)
-    ax = fig.add_subplot(2, 2, 1, projection='3d')
+    ax = fig.add_subplot(2, 2, 1)
     draw_voxels(im1, ax)
-    ax = fig.add_subplot(2, 2, 2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2)
     draw_voxels(im2, ax)
-    ax = fig.add_subplot(2, 2, 3, projection='3d')
+    ax = fig.add_subplot(2, 2, 3)
     draw_voxels(im3, ax)
-    ax = fig.add_subplot(2, 2, 4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4)
     draw_voxels(im4, ax)
 
     plt.title(f'Examples')
@@ -163,6 +163,17 @@ def imshow(im1, im2, im3, im4, e, i):
 
     print('completed writing ', f'images/x_my_fig_{e}_{i}.pdf')
 
+
+def pw__expirement(data):
+    front = data[0, 0, :, :, :].sum(1).detach().numpy()
+    img = plt.imshow(front)
+    plt.show()
+
+    # fig = plt.figure(2)
+    # ax = fig.add_subplot(2, 2, 1, projection='3d')
+    # draw_voxels(data, ax)
+    # plt.show()
+    # print(data.shape)
 
 def getargs():
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
