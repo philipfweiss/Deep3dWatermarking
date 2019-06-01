@@ -70,7 +70,7 @@ class RunModel:
 
             #print(adversary_output_false.shape)
 
-            a, b, c, e, f =  0.5, 0.25, 0.125, 0.0625, 0.0625
+            a, b, c, e, f =  1, 0.70, 0.001, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
             encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (3 * H * W)#encoder loss
             adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
