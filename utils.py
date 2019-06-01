@@ -131,10 +131,13 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
     message_tensor = torch.zeros(batchsize, message_len, depth, width, height)
     for b in range(batchsize):
         message = np.random.randint(2, size=message_len) # defaults to 10
-        for d in range(depth):
-            for w in range(width):
-                for h in range(height):
-                    message_tensor[b, :, d, w, h] = torch.tensor(message)
+        tiled_message = torch.tensor(
+            np.swapaxes(
+                np.broadcast_to(message, (height, depth, width, message_len)),
+                0, 3
+            )
+        )
+        message_tensor[b, :, :, :, :] = tiled_message
 
     return message_tensor.to(device)
 
