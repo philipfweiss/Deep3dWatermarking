@@ -18,6 +18,7 @@ class PointCloudDataset(Dataset):
         save as instance variable
         '''
         self.objects = os.listdir(dataset_folder)
+        self.use_cuda = torch.cuda.is_available()
         pass
 
     """
@@ -34,6 +35,9 @@ class PointCloudDataset(Dataset):
         object = self.objects.__getitem__(idx)
         obj_file_name = os.path.join(dataset_folder, object)#, "models", np_file_format)
         numpy_file = np.load(obj_file_name)
-        tensor = torch.from_numpy(numpy_file).float()#.cuda()
+        if self.use_cuda:
+            tensor = torch.from_numpy(numpy_file).float().cuda()
+        else:
+            tensor = torch.from_numpy(numpy_file).float()
         tensor = tensor[np.newaxis, ...]
         return tensor
