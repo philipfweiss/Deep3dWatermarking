@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, utils
 from pointCloudDataset import PointCloudDataset
-from threading import Thread
+from multiprocessing import Pool
 ## Follow code here:
 ## https://github.com/pytorch/examples/blob/master/mnist/main.py#L2
 
@@ -47,14 +47,14 @@ def main():
     print(dataiter)
     # imshow(utils.make_grid(images))
 
-    runner = RunModel()
+    pool = Pool(processes=1)
+    runner = RunModel(pool)
     for epoch in range(args.epochs):
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 pass
                 # concat = torch.cat((data, encoding), 0)
-                image_rendering_thread = Thread(target=imshow, args=[data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
-                image_rendering_thread.start()
+                pool.apply_async(imshow, [data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
 
     runner.visualize()
 
