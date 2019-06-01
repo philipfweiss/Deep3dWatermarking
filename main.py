@@ -11,6 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, utils
 from pointCloudDataset import PointCloudDataset
+from threading import Thread
 ## Follow code here:
 ## https://github.com/pytorch/examples/blob/master/mnist/main.py#L2
 
@@ -22,8 +23,6 @@ def main():
     torch.manual_seed(args.seed)
     device = torch.device("cuda:0" if use_cuda else "cpu")
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
-
-    ## Download the mnist datasets
 
     dset = PointCloudDataset()
     train_loader = torch.utils.data.DataLoader(
@@ -44,12 +43,11 @@ def main():
 
     runner = RunModel()
     for epoch in range(args.epochs):
-        print(epoch)
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
-                print(data.shape, 'ree')
                 # concat = torch.cat((data, encoding), 0)
-                imshow(data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i)
+                image_rendering_thread = Thread(target=imshow, args=[data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
+                image_rendering_thread.start()
 
     runner.visualize()
 

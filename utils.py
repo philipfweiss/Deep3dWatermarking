@@ -46,9 +46,7 @@ class RunModel:
         adversary.train()
 
         for batch_idx, data in enumerate(train_loader):
-            print(data.shape, 'foo')
-            # print(data.shape, target.shape, 'reeee')
-            #data, target = data.to(device), target.to(device)
+            data = data.to(device)
             optimizer.zero_grad()
 
             N, C, D, W, H = data.shape
@@ -57,9 +55,8 @@ class RunModel:
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
+            
             mask = torch.ceil(data)
-            print(mask)
-
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor, mask)
             decoder_output = decoder(encoder_output)
@@ -99,7 +96,7 @@ class RunModel:
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect.item())
                 self.total_bits.append(args.k)
-                self.visualize()
+                # self.visualize()
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
@@ -131,16 +128,18 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
     message_tensor = torch.zeros(batchsize, message_len, depth, width, height)
     for b in range(batchsize):
         message = np.random.randint(2, size=message_len) # defaults to 10
-        for d in range(depth):
-            for w in range(width):
-                for h in range(height):
-                    message_tensor[b, :, d, w, h] = torch.tensor(message)
+        tiled_message = torch.tensor(
+            np.swapaxes(
+                np.broadcast_to(message, (height, depth, width, message_len)),
+                0, 3
+            )
+        )
+        message_tensor[b, :, :, :, :] = tiled_message
 
     return message_tensor.to(device)
 
 def imshow(im1, im2, im3, im4, i):
     im1 = im1.cpu().detach().numpy()
-    print(im1.shape, 'xx')
     im2 = im2.cpu().detach().numpy()
     im3 = im3.cpu().detach().numpy()
     im4 = im4.cpu().detach().numpy()
@@ -158,6 +157,8 @@ def imshow(im1, im2, im3, im4, i):
     plt.title(f'Examples')
 
     plt.savefig(f'images/x_my_fig_{i}.pdf')
+
+    print('completed writing ', f'images/x_my_fig_{i}.pdf')
 
 
 def getargs():
