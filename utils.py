@@ -51,13 +51,13 @@ class RunModel:
 
             optimizer.zero_grad()
 
-            N, D, H, W = data.shape
-            C = 1
+            N, C, D, W, H = data.shape
 
-            messageTensor = createMessageTensor(N, args.k, D, H, W, device)
+            messageTensor = createMessageTensor(N, args.k, D, W, H, device)
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
+            print(desiredOutput.shape, 'fuck')
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
@@ -139,10 +139,11 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
     return message_tensor.to(device)
 
 def imshow(im1, im2, im3, im4, i):
-    im1 = im1.cpu().numpy()
-    im2 = im2.cpu().numpy()
-    im3 = im3.cpu().numpy()
-    im4 = im4.cpu().numpy()
+    im1 = im1.cpu().detach().numpy()
+    print(im1.shape, 'xx')
+    im2 = im2.cpu().detach().numpy()
+    im3 = im3.cpu().detach().numpy()
+    im4 = im4.cpu().detach().numpy()
 
     fig = plt.figure(2)
     ax = fig.add_subplot(2, 2, 1, projection='3d')

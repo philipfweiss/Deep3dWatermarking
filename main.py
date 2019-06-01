@@ -50,11 +50,13 @@ def main():
 
     runner = RunModel()
     for epoch in range(args.epochs):
-        for i, data in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
+        print(epoch)
+        for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 pass
+                print(data.shape, 'ree')
                 # concat = torch.cat((data, encoding), 0)
-                imshow(data[0, :, :, :], data[1, :, :, :], encoding[0, :, :, :], encoding[1, :, :, :], epoch*10 + i)
+                imshow(data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i)
 
     runner.visualize()
 

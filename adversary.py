@@ -26,7 +26,7 @@ class Adversary(nn.Module):
         self.bn6 = nn.BatchNorm3d(10)
         self.bn7 = nn.BatchNorm3d(10)
 
-        self.fc1 = nn.Linear(640, 10)
+        self.fc1 = nn.Linear(40960, 10)
         self.fc2 = nn.Linear(10, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
         self.sigmoid = nn.Sigmoid()
