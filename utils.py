@@ -39,7 +39,6 @@ class RunModel:
         plt.legend(by_label.values(), by_label.keys())
         plt.xlabel("Batch")
         plt.savefig(f'results/losses.pdf')
-        print("All Done Visualizing Losses")
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
@@ -70,7 +69,7 @@ class RunModel:
             false_labels = torch.zeros(N).to(device)
 
             decoderpredictions = decoder_output.round()
-            numCorrect = torch.sum(decoderpredictions == desiredOutput) / N
+            numCorrect = torch.sum(decoderpredictions == desiredOutput) / float(N)
 
             a, b, c, e, f =  1, 0.70, 0.001, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
@@ -91,9 +90,9 @@ class RunModel:
 
 
                 print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (numCorrect / args.k) )
-                self.train_decoder_losses.append(decoder_loss.item())
-                self.train_adversary_losses.append(adversary_loss.item())
-                self.train_encoder_losses.append(encoder_loss.item())
+                self.train_decoder_losses.append(decoder_loss.item() / a)
+                self.train_adversary_losses.append(adversary_loss.item() / f)
+                self.train_encoder_losses.append(encoder_loss.item() / (b + c))
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect.item())
@@ -159,8 +158,6 @@ def imshow(im1, im2, im3, im4, e, i):
     plt.title(f'Examples')
 
     plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
-
-    print('completed writing ', f'images/x_my_fig_{e}_{i}.pdf')
 
 
 def pw__expirement(data):
