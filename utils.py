@@ -44,11 +44,11 @@ class RunModel:
         encoder.train()
         decoder.train()
         adversary.train()
+
         for batch_idx, data in enumerate(train_loader):
             print(data.shape, 'foo')
             # print(data.shape, target.shape, 'reeee')
             #data, target = data.to(device), target.to(device)
-
             optimizer.zero_grad()
 
             N, C, D, W, H = data.shape
@@ -57,7 +57,8 @@ class RunModel:
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
             desiredOutput = messageTensor[:, :, 0, 0, 0]
-            mask = data
+            mask = torch.ceil(data)
+            
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor, mask)
             decoder_output = decoder(encoder_output)
@@ -70,8 +71,6 @@ class RunModel:
 
             decoderpredictions = decoder_output.round()
             numCorrect = torch.sum(decoderpredictions == desiredOutput) / N
-
-            #print(adversary_output_false.shape)
 
             a, b, c, e, f =  1, 0.70, 0.001, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
