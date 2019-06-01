@@ -41,16 +41,13 @@ def main():
     ## Visualize one batch of training data
     dataiter = iter(train_loader)
 
-    pool = Pool(processes=1)
-    runner = RunModel(pool)
+    runner = RunModel()
     for epoch in range(args.epochs):
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
-                pool.apply_async(imshow, [data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch, i])
+                imshow(data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch, i)
 
-    pool.close()
-    pool.join()
     runner.visualize()
 
 

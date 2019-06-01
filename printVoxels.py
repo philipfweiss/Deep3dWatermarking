@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 def draw_voxels(data, ax):
-    front = np.sum(data[0, 0, :, :, :], axis=1)
+    front = np.sum(data, axis=1)
     ax.imshow(front)
 
     # data[data != 0] = 1

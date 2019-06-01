@@ -41,5 +41,4 @@ class PointCloudDataset(Dataset):
         else:
             tensor = torch.from_numpy(numpy_file).float()
         tensor = tensor[np.newaxis, ...]
-        print(idx, "index")
         return tensor

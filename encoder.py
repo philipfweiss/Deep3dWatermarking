@@ -52,6 +52,7 @@ class Encoder(nn.Module):
         encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
+        #encoded = encoded * mask
         skip_connection = encoded + x
         final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
         final = self.leaky_relu(self.bn6(self.conv6(final)))
