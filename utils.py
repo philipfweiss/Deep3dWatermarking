@@ -41,7 +41,7 @@ class RunModel:
         plt.xlabel("Batch")
         plt.savefig(f'results/losses.pdf')
         print("All Done Visualizing Losses")
-        
+
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
         decoder.train()
@@ -141,7 +141,7 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
 
     return message_tensor.to(device)
 
-def imshow(im1, im2, im3, im4, i):
+def imshow(im1, im2, im3, im4, e, i):
     im1 = im1.cpu().detach().numpy()
     im2 = im2.cpu().detach().numpy()
     im3 = im3.cpu().detach().numpy()
@@ -159,9 +159,9 @@ def imshow(im1, im2, im3, im4, i):
 
     plt.title(f'Examples')
 
-    plt.savefig(f'images/x_my_fig_{i}.pdf')
+    plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
 
-    print('completed writing ', f'images/x_my_fig_{i}.pdf')
+    print('completed writing ', f'images/x_my_fig_{e}_{i}.pdf')
 
 
 def getargs():

@@ -47,7 +47,7 @@ def main():
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
-                pool.apply_async(imshow, [data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch*10 + i])
+                pool.apply_async(imshow, [data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch, i])
 
     pool.close()
     pool.join()
