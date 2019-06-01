@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.nn.functional as F
+import math
 
 class Encoder(nn.Module):
     def __init__(self, k):
@@ -25,12 +26,18 @@ class Encoder(nn.Module):
         self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
-    def forward(self, x, message):
+        gaussian_kernel = torch.ones(3,3,3)/27
+        gaussian_kernel = gaussian_kernel[None,None,...]
+        self.blend = nn.Conv3d(1, 1, 3, 1,1,groups = 1, bias = False)
+        self.blend.weight.data = gaussian_kernel
+        self.blend.weight.requires_grad = False
+
+    def forward(self, x, message, mask):
 
         ## Begin by encoding x with 2 conv-bn-relu blocks.
         intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
         intermediate = self.leaky_relu(self.bn2(self.conv2(intermediate)))
-
+        print(self.conv1.weight.data.shape)
         #intermediate = x.clone()
         ## Concat x and message
         concated = torch.cat((intermediate, message), 1)
@@ -42,5 +49,8 @@ class Encoder(nn.Module):
         skip_connection = encoded + x
         final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
         final = self.leaky_relu(self.bn6(self.conv6(final)))
+        
+        mask = self.blend(mask)
+        final *= mask
 
         return final
