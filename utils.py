@@ -47,14 +47,13 @@ class RunModel:
             # print(data.shape, target.shape, 'reeee')
             data, target = data.to(device), target.to(device)
 
-
             optimizer.zero_grad()
 
-            N, C, W, H = data.shape
-            messageTensor = createMessageTensor(N, args.k, H, W, device)
+            N, C, D, W, H = data.shape
+            messageTensor = createMessageTensor(N, args.k, D, H, W, device)
             if (device == "cuda"):
                 messageTensor = messageTensor.cuda()
-            desiredOutput = messageTensor[:, :, 0, 0]
+            desiredOutput = messageTensor[:, :, 0, 0, 0]
             #output, encoding = model(data, messageTensor)
             encoder_output = encoder(data, messageTensor)
             decoder_output = decoder(encoder_output)
@@ -72,7 +71,7 @@ class RunModel:
 
             a, b, c, e, f =  1, 0.70, 0.001, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
-            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (3 * H * W)#encoder loss
+            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (1 * D * H * W )#encoder loss
             adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
 
             # TODO put dropout
@@ -124,18 +123,14 @@ class RunModel:
         # print(epoch, " reee ", test_loss)
 
 
-def createMessageTensor(batchsize, message_len, width, height, device):
-
-    message_tensor = torch.zeros(batchsize, message_len, width, height)
+def createMessageTensor(batchsize, message_len, depth, width, height, device):
+    message_tensor = torch.zeros(batchsize, message_len, depth, width, height)
     for b in range(batchsize):
         message = np.random.randint(2, size=message_len) # defaults to 10
-        # if b == 0:
-        #     print(message, 'mpp')
-        for w in range(width):
-            for h in range(height):
-                message_tensor[b, :, w, h] = torch.tensor(message)
-
-
+        for d in range(depth):
+            for w in range(width):
+                for h in range(height):
+                    message_tensor[b, :, d, w, h] = torch.tensor(message)
 
     return message_tensor.to(device)
 
