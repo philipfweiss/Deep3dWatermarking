@@ -99,7 +99,7 @@ class RunModel:
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect.item())
                 self.total_bits.append(args.k)
-                self.visualize()
+                # self.visualize()
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
