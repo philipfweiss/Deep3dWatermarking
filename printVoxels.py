@@ -15,13 +15,13 @@ def draw_voxels(data, fig):
         ax.grid(grid)
         return ax
 
+    data[data != 0] = 1
     filled = data[0]
 
     ax = make_ax(True)
     ax.view_init(30, 145)
-    ax.voxels(filled, facecolors='#1f77b430', edgecolors='gray')
-
-data = array([np.load("/Users/Lipman/Downloads/model_normalized-4.npy")])
+    ax.voxels(filled, facecolors='#1f77b430', edgecolors='#0101FD20')
+data = array([np.load("/Users/Lipman/Downloads/model_normalized-7.npy")])
 fig = plt.figure()
 draw_voxels(data, fig)
 plt.show()
