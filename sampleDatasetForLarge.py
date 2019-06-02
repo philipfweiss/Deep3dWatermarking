@@ -25,7 +25,7 @@ vertice_cutoff = 10000
 if "--cutoff" in args:
     vertice_cutoff = args["--cutoff"]
 
-total_slice_size = args["--size"]
+total_slice_size = args.size
 
 recompute = True
 if "--norecompute" in args:
