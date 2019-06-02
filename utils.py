@@ -73,7 +73,9 @@ class RunModel:
 
             a, b, c, e, f =  1, 0.7, 0.2, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
-            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * (encoder_output - data).norm(2) / (1 * D * H * W )#encoder loss
+            # diff_term = (encoder_output - data).norm(2) / (1 * D * H * W )
+            diff_term = (encoder_output - data).norm(3) / (1 * D * H * W)
+            encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * diff_term #encoder loss
             adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
 
             image_grad = 0#torch.sum(torch.abs(data.grad))
