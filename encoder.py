@@ -58,8 +58,8 @@ class Encoder(nn.Module):
         encoded *= mask
         encoded = encoded / torch.sum(encoded)
 
-        print(torch.sum(encoded),"sum encoded")
-        print(torch.sum(x),"sum data")
+        #print(torch.sum(encoded),"sum encoded")
+        #print(torch.sum(x),"sum data")
 
         skip_connection = encoded + x
         final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
