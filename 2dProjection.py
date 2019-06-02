@@ -4,82 +4,134 @@ import matplotlib.pyplot as plt
 
 data = array([np.load("/Users/Lipman/Downloads/model_normalized-7.npy")])[0]
 
-front = np.sum(data, axis=0)
-side = np.sum(data, axis=1)
-other_size = np.sum(data, axis=2)
-
-fig = plt.figure()
-
-ax = fig.add_subplot(1, 4, 1)
-ax.imshow(front)
-
-ax = fig.add_subplot(1, 4, 2)
-ax.imshow(side)
-
-ax = fig.add_subplot(1, 4, 3)
-ax.imshow(other_size)
+# front = np.sum(data, axis=0)
+# side = np.sum(data, axis=1)
+# other_size = np.sum(data, axis=2)
 
 #https://github.com/s-macke/VoxelSpace
 
-p = {"x": 32, "y": 32, "z": -30}
-height = 0
-horizon_y = 30
-horizon_x = 30
-scale_height = 2
-distance = 50
-screen_width = 32
-screen_height = 32
-data_height = data.shape[1]
-data_width = data.shape[0]
-data_depth = data.shape[2]
-print("data shape", data.shape)
 
-result = np.zeros((screen_width, screen_height))
+def capture_picture(re_ax, p, phi_x):
 
-num_found = 0
+    distance = 64
+    screen_width = 128
+    screen_height = 128
+    data_height = data.shape[1]
+    data_width = data.shape[0]
+    data_depth = data.shape[2]
+    # print("data shape", data.shape)
 
-# Draw from back to the front (high z coordinate to low z coordinate)
-for z in range(distance, p["z"], -1):
-    if z >= data_depth:
-        continue
-    print("z: ", z)
-    # Find line on map. This calculation corresponds to a field of view of 90°
-    pleft = {"x": -z + p["x"], "y": z + p["y"]}
-    pright = {"x": z + p["x"], "y": -z + p["y"]}
-    original_x = pleft["x"]
-    original_y = pleft["y"]
-    print("pleft: ", pleft, " pright: ", pright)
-    # segment the line
-    dx = (pright["x"] - pleft["x"]) / screen_width
-    dy = (pright["y"] - pleft["y"]) / screen_height
-    print("dx 3d: ", (pright["x"] - pleft["x"]), " dx 2d: ", dx)
-    print("dy 3d: ", (pright["y"] - pleft["y"]), " dy 2d: ", dy)
-    # Raster line and draw a vertical line for each segment
-    for x in range(int(pleft["x"] / data_width * screen_width), int(pright["x"] / data_width * screen_width)):
-        if pleft["x"] >= data_width or pleft["x"] <= 0:
-            pleft["x"] += dx
+    #TODO, have this work so we can vary y as well
+
+    sinphi_x = math.sin(phi_x)
+
+    cosphi_x = math.cos(phi_x)
+
+    result = np.zeros((screen_width, screen_height))
+
+    num_found = 0
+
+    # ax = fig.add_subplot(2, 2, 3)
+    # Draw from back to the front (high z coordinate to low z coordinate)
+    for z in range(distance, p["z"], -1):
+        if z >= data_depth:
             continue
-        for y in range(int(pright["y"] / data_height * screen_height) - 1, int(pleft["y"] / data_height * screen_height), 1):
-            if pleft["y"] >= data_height or pleft["y"] <= 0:
-                pleft["y"] += dy
-                continue
-            print(x, y)
-            if data[int(pleft["x"]), int(pleft["y"]), z] != 0:
-                num_found += 1
-                print("drawing from: ", int(pleft["x"]), int(pleft["y"]), z, " to assign at: ", x, y)
-                result[int(x / z * scale_height) + horizon_x, int(y / z * scale_height) + horizon_y] = data[int(pleft["x"]), int(pleft["y"]), z]
-            pleft["y"] += dy
-        pleft["y"] = original_y
-        pleft["x"] += dx
-    pleft["x"] = original_x
+        dist_from_point = z - p["z"]
 
-print(num_found)
-ax = fig.add_subplot(1, 4, 4)
-ax.imshow(result)
+        # print("z: ", z)
+
+        # pleft = {"x": -dist_from_point + p["x"], "z": -dist_from_point + p["z"], "y": -dist_from_point + p["y"]}
+        # pright = {"x": dist_from_point + p["x"], "z": -dist_from_point + p["z"], "y": dist_from_point + p["y"]}
+
+        pleft = {"x": (-cosphi_x * dist_from_point - sinphi_x * dist_from_point) + p["x"], "z": (sinphi_x * dist_from_point - cosphi_x * dist_from_point) + p["z"], "y": -dist_from_point + p["y"]}
+        pright = {"x": (cosphi_x * dist_from_point - sinphi_x * dist_from_point) + p["x"], "z": (-sinphi_x * dist_from_point - cosphi_x * dist_from_point) + p["z"], "y": dist_from_point + p["y"]}
+        # viewpoint_ax.plot([pleft["x"], pright["x"]], [pleft["z"], pright["z"]], color='k', linestyle='-', linewidth=1)
+        # ax.plot([pleft["y"], pright["y"]], [pleft["z"], pright["z"]], color='c', linestyle='-', linewidth=1)
+        original_x = pleft["x"]
+        original_y = pleft["y"]
+        # print("pleft: ", pleft, " pright: ", pright)
+        # segment the line
+        dx = (pright["x"] - pleft["x"]) / screen_width
+        dy = (pright["y"] - pleft["y"]) / screen_height
+        # print("dx 3d: ", (pright["x"] - pleft["x"]), " dx 2d: ", dx)
+        # print("dy 3d: ", (pright["y"] - pleft["y"]), " dy 2d: ", dy)
+        # Raster line and draw a vertical line for each segment
+        for x in range(0, screen_width):
+            if pleft["x"] >= data_width or pleft["x"] <= 0:
+                pleft["x"] += dx
+                continue
+            for y in range(0, screen_height):
+                if pleft["y"] >= data_height or pleft["y"] <= 0:
+                    pleft["y"] += dy
+                    continue
+                #TODO, make this vectorized using pytorch so it is differentiable
+                if data[int(pleft["x"]), int(pleft["y"]), z] != 0:
+                    # print("found one at ", int(pleft["x"]), int(pleft["y"]))
+                    num_found += 1
+                    result[x, y] = data[int(pleft["x"]), int(pleft["y"]), z]
+                    # result[x , int(y / dist_from_point * scale_height)] = data[int(pleft["x"]), int(pleft["y"]), z]
+                pleft["y"] += dy
+            pleft["y"] = original_y
+            pleft["x"] += dx
+        pleft["x"] = original_x
+    print(num_found)
+    re_ax.imshow(result)
+
+
+num = 30
+l = int(sqrt(num))
+f, axarr = plt.subplots(l, l)
+
+i = 0
+for x in range(l):
+    for y in range(l):
+        ax1 = axarr[x, y]
+        ax1.axis('equal')
+        # need to tune these values
+        p = {"x": 0, "y": 32, "z": -10}
+        phi = 6.2 / (l ** 2) * i
+        print(x, y, phi)
+        capture_picture(ax1, p, phi)
+        i += 1
 
 plt.show()
 
+# f, axarr = plt.subplots(2, 2)
+# ax1 = axarr[0, 0]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 45, "z": 0}
+# phi = 0.17222222222222222
+# capture_picture(ax1, p, phi)
+#
+# ax1 = axarr[0, 1]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 45, "z": 0}
+# phi = 0.34444444444444444
+# capture_picture(ax1, p, phi)
+#
+# data = np.swapaxes(data, 1, 2)
+#
+# ax1 = axarr[1, 0]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 32, "z": -10}
+# phi =5.952
+# capture_picture(ax1, p, phi)
+#
+# ax1 = axarr[1, 1]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 32, "z": -10}
+# phi = 0.6888888888888889
+# capture_picture(ax1, p, phi)
+#
+# plt.show()
 
-        # height_on_screen = (height - heightmap[pleft.x, pleft.y]) / z * scale_height. + horizon
-        # DrawVerticalLine(i, height_on_screen, screen_height, colormap[pleft.x, pleft.y])
+#good values of phi, x, y: not really, still nead to mess around
+"""
+no switch
+phi = 0.17222222222222222 p = {"x": 0, "y": 45, "z": 0}
+phi = 0.34444444444444444 p = {"x": 0, "y": 45, "z": 0}
 
+np.swapaxes(data, 1, 2)
+phi = 5.952 p = {"x": 0, "y": 32, "z": -10}
+phi = 0.6888888888888889 p = {"x": 0, "y": 32, "z": -10}
+"""
