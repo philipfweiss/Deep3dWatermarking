@@ -155,9 +155,9 @@ def imshow(im1, im2, im3, im4, e, i):
     ax = fig.add_subplot(2, 2, 4)
     draw_voxels(im4, ax)
 
-    plt.title(f'Examples')
+    plt.title('Examples')
 
-    plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
+    plt.savefig("images/x_my_fig_", e, "_", i, ".pdf")
 
 
 def pw__expirement(data):
