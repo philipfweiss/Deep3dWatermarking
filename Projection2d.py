@@ -66,7 +66,7 @@ def capture_picture(p, data, output_height, output_width):
             pleft["x"] += dx
         pleft["x"] = original_x
         z += dz
-        dz += 3
+        dz += 10
     print(num_found)
     return result
 
