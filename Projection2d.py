@@ -66,7 +66,7 @@ def capture_picture(p, data, output_height, output_width):
             pleft["x"] += dx
         pleft["x"] = original_x
         z += dz
-        dz += 1
+        dz += 3
     print(num_found)
     return result
 
@@ -85,7 +85,7 @@ def convert_to_2d(data):
         image = image[0]
         image_results = []
         for p in ps:
-            image_results.append(capture_picture(p, image, 128, 128))
+            image_results.append(capture_picture(p, image, 64, 64))
         results.append(image_results)
     return torch.tensor(results)
 
