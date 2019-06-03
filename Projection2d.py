@@ -33,7 +33,6 @@ def capture_picture(p, data, output_height, output_width):
     # Draw from back to the front (high z coordinate to low z coordinate)
     z = distance
     while z > p["z"]:
-        print(z)
         if z >= data_depth:
             z -= dz
             dz += ddz
