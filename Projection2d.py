@@ -30,7 +30,7 @@ def capture_picture(p, data, output_height, output_width):
 
     num_found = 0
 
-    dz = -5
+    dz = -8
     ddz = 0.3
     # a = z_dif * dz_end * ddz ** 2
     # dz = a
@@ -97,16 +97,16 @@ def convert_to_2d(data):
         image = image[0]
         image_results = []
 
-        image_results.append(capture_picture(ps[0], image, 64, 64))
-        image_results.append(capture_picture(ps[1], image, 64, 64))
-
-        image = image.permute(0, 2, 1)
-
-        image_results.append(capture_picture(ps[2], image, 64, 64))
-        image_results.append(capture_picture(ps[3], image, 64, 64))
-
-        image = image.permute(0, 2, 1)
-        image = image.permute(2, 1, 1)
+        # image_results.append(capture_picture(ps[0], image, 64, 64))
+        # image_results.append(capture_picture(ps[1], image, 64, 64))
+        #
+        # image = image.permute(0, 2, 1)
+        #
+        # image_results.append(capture_picture(ps[2], image, 64, 64))
+        # image_results.append(capture_picture(ps[3], image, 64, 64))
+        #
+        # image = image.permute(0, 2, 1)
+        image = image.permute(2, 1, 0)
 
         image_results.append(capture_picture(ps[4], image, 64, 64))
         image_results.append(capture_picture(ps[5], image, 64, 64))
