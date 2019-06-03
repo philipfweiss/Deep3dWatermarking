@@ -26,8 +26,7 @@ class Decoder(nn.Module):
         self.bn5 = nn.BatchNorm3d(10)
         self.bn6 = nn.BatchNorm3d(10)
         self.bn7 = nn.BatchNorm3d(10)
-
-        self.fc1 = nn.Linear(40960, k)
+        self.fc1 = torch.nn.utils.weight_norm(nn.Linear(40960, k), name='weight')
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
         self.sigmoid = nn.Sigmoid()
 
