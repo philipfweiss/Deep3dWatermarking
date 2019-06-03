@@ -12,7 +12,7 @@ class Decoder(nn.Module):
     def __init__(self, k):
         super(Decoder, self).__init__()
         self.pool = nn.AvgPool3d(2)
-        self.conv1 = nn.Conv2d(1, 10, 3, 1, 1)
+        self.conv1 = nn.Conv2d(2, 10, 3, 1, 1)
         self.conv2 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv3 = nn.Conv2d(10, 10, 3, 1, 1)
         self.conv4 = nn.Conv2d(10, 10, 3, 1, 1)

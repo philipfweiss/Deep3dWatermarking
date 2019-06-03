@@ -38,7 +38,7 @@ def capture_picture(p, data, output_height, output_width):
     # Draw from back to the front (high z coordinate to low z coordinate)
     z = distance
     while z > p["z"]:
-        print(z)
+        # print(z)
         if z >= data_depth:
             z += dz
             dz += ddz
@@ -60,6 +60,7 @@ def capture_picture(p, data, output_height, output_width):
         dx = (pright["x"] - pleft["x"]) / screen_width
         dy = (pright["y"] - pleft["y"]) / screen_height
         # Raster line and draw a vertical line for each segment
+
         for x in range(0, screen_width):
             if pleft["x"] >= data_width or pleft["x"] <= 0:
                 pleft["x"] += dx
