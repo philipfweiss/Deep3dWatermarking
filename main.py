@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, utils
 from pointCloudDataset import PointCloudDataset
-from multiprocessing import Pool
+import random
 ## Follow code here:
 ## https://github.com/pytorch/examples/blob/master/mnist/main.py#L2
 
@@ -52,7 +52,9 @@ def main():
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
-                imshow(data[0, 0, :, :, :], data[1, 0, :, :, :], encoding[0, 0, :, :, :], encoding[1, 0, :, :, :], epoch, i)
+                im1 = random.randint(0, args.batch_size)
+                im2 = random.randint(0, args.batch_size)
+                imshow(data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
 
     runner.visualize()
 
