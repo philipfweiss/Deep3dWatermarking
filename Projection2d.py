@@ -100,13 +100,13 @@ def convert_to_2d(data):
         image_results.append(capture_picture(ps[0], image, 64, 64))
         image_results.append(capture_picture(ps[1], image, 64, 64))
 
-        image = np.swapaxes(image, 1, 2)
+        image = image.permute(0, 2, 1)
 
         image_results.append(capture_picture(ps[2], image, 64, 64))
         image_results.append(capture_picture(ps[3], image, 64, 64))
 
-        image = np.swapaxes(image, 1, 2)
-        image = np.swapaxes(image, 0, 2)
+        image = image.permute(0, 2, 1)
+        image = image.permute(2, 1, 1)
 
         image_results.append(capture_picture(ps[4], image, 64, 64))
         image_results.append(capture_picture(ps[5], image, 64, 64))
