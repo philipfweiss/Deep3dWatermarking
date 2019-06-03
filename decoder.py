@@ -30,6 +30,7 @@ class Decoder(nn.Module):
         self.fc1 = nn.Linear(40960, 1024)
         self.fc2 = nn.Linear(1024,k)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         # x = convert_to_2d(x)
