@@ -35,6 +35,8 @@ def capture_picture(p, data, output_height, output_width):
     z = distance
     while z > p["z"]:
         if z >= data_depth:
+            z -= dz
+            dz += 3
             continue
         dist_from_point = z - p["z"]
 
