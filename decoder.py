@@ -26,6 +26,7 @@ class Decoder(nn.Module):
         self.bn5 = nn.BatchNorm3d(10)
         self.bn6 = nn.BatchNorm3d(10)
         self.bn7 = nn.BatchNorm3d(10)
+        self.dropout = torch.nn.Dropout3d(p=0.5, inplace=False)
         self.fc1 = torch.nn.utils.weight_norm(nn.Linear(40960, k), name='weight')
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
         self.sigmoid = nn.Sigmoid()
@@ -39,6 +40,7 @@ class Decoder(nn.Module):
         x = self.leaky_relu(self.bn4(self.conv4(x)))
         x = self.leaky_relu(self.bn5(self.conv5(x)))
         x = self.pool(x)
+        x = self.dropout(x)
 
         ## Flatten and affine
         x = x.view(x.size(0), -1)
