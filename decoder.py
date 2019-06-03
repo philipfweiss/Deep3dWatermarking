@@ -6,32 +6,33 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.nn.functional as F
+from Projection2d import convert_to_2d
 
 class Decoder(nn.Module):
     def __init__(self, k):
         super(Decoder, self).__init__()
-        self.pool = nn.AvgPool3d(2)
-        self.conv1 = nn.Conv3d(1, 10, 3, 1, 1)
-        self.conv2 = nn.Conv3d(10, 10, 3, 1, 1)
-        self.conv3 = nn.Conv3d(10, 10, 3, 1, 1)
-        self.conv4 = nn.Conv3d(10, 10, 3, 1, 1)
-        self.conv5 = nn.Conv3d(10, 10, 3, 1, 1)
-        self.conv6 = nn.Conv3d(10, 10, 3, 1, 1)
-        self.conv7 = nn.Conv3d(10, 10, 3, 1, 1)
-        self.bn1 = nn.BatchNorm3d(10)
-        self.bn2 = nn.BatchNorm3d(10)
-        self.bn3 = nn.BatchNorm3d(10)
-        self.bn4 = nn.BatchNorm3d(10)
-        self.bn5 = nn.BatchNorm3d(10)
-        self.bn6 = nn.BatchNorm3d(10)
-        self.bn7 = nn.BatchNorm3d(10)
+        self.pool = nn.AvgPool2d(2)
+        self.conv1 = nn.Conv2d(1, 10, 3, 1, 1)
+        self.conv2 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.conv3 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.conv4 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.conv5 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.conv6 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.conv7 = nn.Conv2d(10, 10, 3, 1, 1)
+        self.bn1 = nn.BatchNorm2d(10)
+        self.bn2 = nn.BatchNorm2d(10)
+        self.bn3 = nn.BatchNorm2d(10)
+        self.bn4 = nn.BatchNorm2d(10)
+        self.bn5 = nn.BatchNorm2d(10)
+        self.bn6 = nn.BatchNorm2d(10)
+        self.bn7 = nn.BatchNorm2d(10)
 
         self.fc1 = nn.Linear(40960, k)
         self.sigmoid = nn.Sigmoid()
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
     def forward(self, x):
-
+        x = convert_to_2d(x)
         x = self.leaky_relu(self.bn1(self.conv1(x)))
         x = self.pool(x)
         x = self.leaky_relu(self.bn2(self.conv2(x)))
