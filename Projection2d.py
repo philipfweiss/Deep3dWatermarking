@@ -1,13 +1,15 @@
 import numpy as np
 from numpy import *
 import torch
-from utils import imshow
+import matplotlib.pyplot as plt
+
 
 # front = np.sum(data, axis=0)
 # side = np.sum(data, axis=1)
 # other_size = np.sum(data, axis=2)
 
 # https://github.com/s-macke/VoxelSpace for all equations
+
 
 
 def capture_picture(p, data, output_height, output_width):
@@ -28,14 +30,20 @@ def capture_picture(p, data, output_height, output_width):
 
     num_found = 0
 
-    dz = 1
-    ddz = 1
+    dz = -5
+    ddz = 0.3
+    # a = z_dif * dz_end * ddz ** 2
+    # dz = a
+    # print(a)
     # Draw from back to the front (high z coordinate to low z coordinate)
     z = distance
     while z > p["z"]:
+        print(z)
         if z >= data_depth:
-            z -= dz
+            z += dz
             dz += ddz
+            if dz >= -1:
+                dz = -1
             continue
         dist_from_point = z - p["z"]
 
@@ -60,15 +68,17 @@ def capture_picture(p, data, output_height, output_width):
                 if pleft["y"] >= data_height or pleft["y"] <= 0:
                     pleft["y"] += dy
                     continue
-                if data[int(pleft["x"]), int(pleft["y"]), z] != 0:
+                if data[int(pleft["x"]), int(pleft["y"]), int(z)] != 0:
                     num_found += 1
-                    result[x, y] = data[int(pleft["x"]), int(pleft["y"]), z]
+                    result[x, y] = data[int(pleft["x"]), int(pleft["y"]), int(z)]
                 pleft["y"] += dy
             pleft["y"] = original_y
             pleft["x"] += dx
         pleft["x"] = original_x
-        z -= dz
+        z += dz
         dz += ddz
+        if dz >= -1:
+            dz = -1
     print(num_found)
     return result
 
@@ -86,14 +96,58 @@ def convert_to_2d(data):
         print("converted image")
         image = image[0]
         image_results = []
-        for p in ps:
-            image_results.append(capture_picture(p, image, 64, 64))
+
+        image_results.append(capture_picture(ps[0], image, 64, 64))
+        image_results.append(capture_picture(ps[1], image, 64, 64))
+
+        image = np.swapaxes(image, 1, 2)
+
+        image_results.append(capture_picture(ps[2], image, 64, 64))
+        image_results.append(capture_picture(ps[3], image, 64, 64))
+
+        image = np.swapaxes(image, 1, 2)
+        image = np.swapaxes(image, 0, 2)
+
+        image_results.append(capture_picture(ps[4], image, 64, 64))
+        image_results.append(capture_picture(ps[5], image, 64, 64))
         results.append(image_results)
 
     pytens = torch.tensor(results)
-    imshow(pytens[0][0], pytens[0][1], pytens[0][2], pytens[0][3], 200, 200)
     return pytens
 
+# data = array([np.load("/Users/Lipman/Downloads/model_normalized-7.npy")])[0]
+# convert_to_2d(data)
+
+# f, axarr = plt.subplots(2, 2)
+# ax1 = axarr[0, 0]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 45, "z": 0}
+# phi = 0.17222222222222222
+# capture_picture(ax1, p, phi)
+#
+# ax1 = axarr[0, 1]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 45, "z": 0}
+# phi = 0.34444444444444444
+# capture_picture(ax1, p, phi)
+#
+# data = np.swapaxes(data, 1, 2)
+#
+# ax1 = axarr[1, 0]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 32, "z": -10}
+# phi =5.952
+# capture_picture(ax1, p, phi)
+#
+# ax1 = axarr[1, 1]
+# ax1.axis('equal')
+# p = {"x": 0, "y": 32, "z": -10}
+# phi = 0.6888888888888889
+# capture_picture(ax1, p, phi)
+#
+# plt.show()
+#
+# plt.subplots(l, l)
 
 # good values of phi, x, y: not really, still nead to mess around
 """
