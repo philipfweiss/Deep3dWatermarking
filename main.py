@@ -52,8 +52,8 @@ def main():
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
-                im1 = random.randint(0, args.batch_size)
-                im2 = random.randint(0, args.batch_size)
+                im1 = random.randint(0, args.batch_size - 1)
+                im2 = random.randint(0, args.batch_size - 1)
                 imshow(data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
 
     runner.visualize()
