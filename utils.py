@@ -68,17 +68,16 @@ class RunModel:
             true_labels = torch.ones(N).to(device)
             false_labels = torch.zeros(N).to(device)
 
-            decoderpredictions = decoder_output.round()
+            #decoderpredictions = decoder_output.round()
+            decoderpredictions = torch.where(decoder_output >= 0.5,torch.ones_like(decoder_output),torch.zeros_like(decoder_output))
             numCorrect = torch.sum(decoderpredictions == desiredOutput).item() / float(N)
 
-            if epoch <= 100:
+            if epoch <= 200:
                 a, b, c, e, f =  1, 0.70*1e8, 0.2, 0.001, 0.001
-            elif epoch <= 200:
-                a, b, c, e, f =  1, 0.70, 0.2, 0.001, 0.001
             elif epoch <= 300:
-                a, b, c, e, f =  1, 0.70*1e5, 0.2, 0.001, 0.001
+                a, b, c, e, f =  1, 0.70, 0.2, 0.001, 0.001
             elif epoch <= 400:
-                a, b, c, e, f =  1, 0.70*1e7, 0.2, 0.001, 0.001
+                a, b, c, e, f =  1, 0.70*1e6, 0.2, 0.001, 0.001
             else:
                 a, b, c, e, f =  1, 0.70*1e8, 0.2, 0.001, 0.001
 
