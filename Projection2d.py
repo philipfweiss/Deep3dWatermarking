@@ -92,7 +92,7 @@ def convert_to_2d(data):
         results.append(image_results)
 
     pytens = torch.tensor(results)
-    imshow(results[0, 0, :, :, :], results[0, 1, :, :, :], results[0, 2, :, :, :], results[, 3, :, :, :], "kk", "asdf")
+    imshow(results[0, 0, :, :, :], results[0, 1, :, :, :], results[0, 2, :, :, :], results[, 3, :, :, :], 200, 200)
     return pytens
 
 
