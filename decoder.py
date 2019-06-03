@@ -32,7 +32,7 @@ class Decoder(nn.Module):
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
     def forward(self, x):
-        # x = convert_to_2d(x)
+        x = convert_to_2d(x)
         x = self.leaky_relu(self.bn1(self.conv1(x)))
         x = self.pool(x)
         x = self.leaky_relu(self.bn2(self.conv2(x)))
