@@ -140,24 +140,25 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
     return message_tensor.to(device)
 
 def imshow(im1, im2, im3, im4, e, i):
-    im1 = im1.cpu().detach().numpy()
-    im2 = im2.cpu().detach().numpy()
-    im3 = im3.cpu().detach().numpy()
-    im4 = im4.cpu().detach().numpy()
+    with torch.no_grad:
+        im1 = im1.cpu().detach().numpy()
+        im2 = im2.cpu().detach().numpy()
+        im3 = im3.cpu().detach().numpy()
+        im4 = im4.cpu().detach().numpy()
 
-    fig = plt.figure(2)
-    ax = fig.add_subplot(2, 2, 1)
-    draw_voxels(im1, ax)
-    ax = fig.add_subplot(2, 2, 2)
-    draw_voxels(im2, ax)
-    ax = fig.add_subplot(2, 2, 3)
-    draw_voxels(im3, ax)
-    ax = fig.add_subplot(2, 2, 4)
-    draw_voxels(im4, ax)
+        fig = plt.figure(2)
+        ax = fig.add_subplot(2, 2, 1)
+        draw_voxels(im1, ax)
+        ax = fig.add_subplot(2, 2, 2)
+        draw_voxels(im2, ax)
+        ax = fig.add_subplot(2, 2, 3)
+        draw_voxels(im3, ax)
+        ax = fig.add_subplot(2, 2, 4)
+        draw_voxels(im4, ax)
 
-    plt.title(f'Examples')
+        plt.title(f'Examples')
 
-    plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
+        plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
 
 
 def pw__expirement(data):

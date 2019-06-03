@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import *
 import torch
-
+from utils import imshow
 
 # front = np.sum(data, axis=0)
 # side = np.sum(data, axis=1)
@@ -29,13 +29,14 @@ def capture_picture(p, data, output_height, output_width):
     num_found = 0
 
     dz = 1
+    ddz = 1
     # Draw from back to the front (high z coordinate to low z coordinate)
     z = distance
     while z > p["z"]:
         print(z)
         if z >= data_depth:
             z -= dz
-            dz += 3
+            dz += ddz
             continue
         dist_from_point = z - p["z"]
 
@@ -68,7 +69,7 @@ def capture_picture(p, data, output_height, output_width):
             pleft["x"] += dx
         pleft["x"] = original_x
         z -= dz
-        dz += 3
+        dz += ddz
     print(num_found)
     return result
 
@@ -89,7 +90,10 @@ def convert_to_2d(data):
         for p in ps:
             image_results.append(capture_picture(p, image, 64, 64))
         results.append(image_results)
-    return torch.tensor(results)
+
+    pytens = torch.tensor(results)
+    imshow(results[0, 0, :, :, :], results[0, 1, :, :, :], results[0, 2, :, :, :], results[, 3, :, :, :], "kk", "asdf")
+    return pytens
 
 
 # good values of phi, x, y: not really, still nead to mess around
