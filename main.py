@@ -58,6 +58,7 @@ def main():
 
 
     if (args.save_model):
+        print("saving model")
         torch.save(encoder.state_dict(),"encoder.pt")
         torch.save(decoder.state_dict(),"decoder.pt")
         torch.save(adversary.state_dict(),"adversary.pt")
