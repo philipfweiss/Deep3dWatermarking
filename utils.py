@@ -179,7 +179,7 @@ def getargs():
                         help='input batch size for testing (default: 1000)')
     parser.add_argument('--epochs', type=int, default=10, metavar='N',
                         help='number of epochs to train (default: 10)')
-    parser.add_argument('--lr', type=float, default=1e-3, metavar='LR',
+    parser.add_argument('--lr', type=float, default=1e-2, metavar='LR',
                         help='learning rate (default: 0.01)')
     parser.add_argument('--k', type=int, default=10, metavar='LR',
                         help='Bits in secret message')
