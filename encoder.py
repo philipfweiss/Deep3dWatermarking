@@ -26,6 +26,8 @@ class Encoder(nn.Module):
         self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 
+        self.dropout = torch.nn.Dropout3d(p=0.5, inplace=False)
+
         gaussian_kernel = torch.ones(3,3,3)/27
         gaussian_kernel = gaussian_kernel[None,None,...]
         self.blend = nn.Conv3d(1, 1, 3, 1,1,groups = 1, bias = False)
@@ -42,6 +44,7 @@ class Encoder(nn.Module):
         concated = torch.cat((intermediate, message), 1)
 
         ## more conv layers
+        concated = self.dropout(concated)
         encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
