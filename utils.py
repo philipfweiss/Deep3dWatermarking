@@ -38,7 +38,7 @@ class RunModel:
         by_label = OrderedDict(zip(labels, handles))
         plt.legend(by_label.values(), by_label.keys())
         plt.xlabel("Batch")
-        plt.savefig(f'results/losses.pdf')
+        plt.savefig('results/losses.pdf')
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
