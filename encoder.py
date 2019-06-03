@@ -46,7 +46,7 @@ class Encoder(nn.Module):
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
         # encoded *= mask
-        # encoded = encoded / torch.sum(encoded)
+        encoded = encoded / torch.sum(encoded)
 
         skip_connection = encoded + x
         final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
