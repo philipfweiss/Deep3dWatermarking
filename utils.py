@@ -71,7 +71,17 @@ class RunModel:
             decoderpredictions = decoder_output.round()
             numCorrect = torch.sum(decoderpredictions == desiredOutput).item() / float(N)
 
-            a, b, c, e, f =  1, 0.70*1e8, 0.2, 0.001, 0.001
+            if epoch <= 100:
+                a, b, c, e, f =  1, 0.70*1e8, 0.2, 0.001, 0.001
+            elif epoch <= 200:
+                a, b, c, e, f =  1, 0.70, 0.2, 0.001, 0.001
+            elif epoch <= 300:
+                a, b, c, e, f =  1, 0.70*1e5, 0.2, 0.001, 0.001
+            elif epoch <= 400:
+                a, b, c, e, f =  1, 0.70*1e7, 0.2, 0.001, 0.001
+            else:
+                a, b, c, e, f =  1, 0.70*1e8, 0.2, 0.001, 0.001
+
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
             # diff_term = (encoder_output - data).norm(2) / (1 * D * H * W )
             diff_term = (encoder_output - data).norm(3) / (1 * D * H * W)
@@ -197,5 +207,9 @@ def getargs():
                         help='For local dev')
     parser.add_argument('--load-encoder', type=str, default='', metavar='N',
                         help='load pretrained encoder')
+    parser.add_argument('--load-decoder', type=str, default='', metavar='N',
+                        help='load pretrained decoder')
+    parser.add_argument('--load-adversary', type=str, default='', metavar='N',
+                        help='load pretrained adversary')
     args = parser.parse_args()
     return args

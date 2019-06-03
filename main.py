@@ -41,6 +41,10 @@ def main():
 
     if args.load_encoder:
         encoder.load_state_dict(torch.load(args.load_encoder))
+    if args.load_decoder:
+        decoder.load_state_dict(torch.load(args.load_decoder))
+    if args.load_adversary:
+        adversary.load_state_dict(torch.load(args.load_adversary))
 
     params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
     optimizer = optim.Adam(params, lr=args.lr)
