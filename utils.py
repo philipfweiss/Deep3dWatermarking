@@ -71,7 +71,7 @@ class RunModel:
             decoderpredictions = decoder_output.round()
             numCorrect = torch.sum(decoderpredictions == desiredOutput).item() / float(N)
 
-            a, b, c, e, f =  1, 0.70*1e5, 0.2, 0.001, 0.001
+            a, b, c, e, f =  1, 0.70*1e6, 0.2, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
             # diff_term = (encoder_output - data).norm(2) / (1 * D * H * W )
             diff_term = (encoder_output - data).norm(3) / (1 * D * H * W)
