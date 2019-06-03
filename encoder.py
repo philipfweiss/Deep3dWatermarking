@@ -33,30 +33,26 @@ class Encoder(nn.Module):
         self.blend.weight.requires_grad = False
 
     def forward(self, x, message, mask):
-
         ## Begin by encoding x with 2 conv-bn-relu blocks.
         intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
         intermediate = self.leaky_relu(self.bn2(self.conv2(intermediate)))
         ## Concat x and message
         mask = self.blend(self.blend(mask))
-        #print(torch.sum(mask == 0))
-        #print(mask.shape)
-        #print(message.shape)
-
         message = message*mask
-        #print(torch.sum(message == 0))
-        #print(message.shape)
         concated = torch.cat((intermediate, message), 1)
 
         ## more conv layers
         encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
-        #encoded = encoded * mask
+        encoded *= mask
+        encoded = encoded / torch.sum(encoded)
+
         skip_connection = encoded + x
         final = self.leaky_relu(self.bn5(self.conv5(skip_connection)))
         final = self.leaky_relu(self.bn6(self.conv6(final)))
 
         final *= mask
+        final *= 1/torch.sum(final)
 
         return final

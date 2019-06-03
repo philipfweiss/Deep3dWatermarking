@@ -71,7 +71,7 @@ class RunModel:
             decoderpredictions = decoder_output.round()
             numCorrect = torch.sum(decoderpredictions == desiredOutput).item() / float(N)
 
-            a, b, c, e, f =  1, 0.7, 0.2, 0.001, 0.001
+            a, b, c, e, f =  1, 0.70*1e8, 0.2, 0.001, 0.001
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
             # diff_term = (encoder_output - data).norm(2) / (1 * D * H * W )
             diff_term = (encoder_output - data).norm(3) / (1 * D * H * W)
@@ -181,10 +181,8 @@ def getargs():
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=1e-3, metavar='LR',
                         help='learning rate (default: 0.01)')
-
     parser.add_argument('--k', type=int, default=10, metavar='LR',
                         help='Bits in secret message')
-
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                         help='SGD momentum (default: 0.5)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
@@ -193,8 +191,11 @@ def getargs():
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
-
     parser.add_argument('--save-model', action='store_true', default=True,
                         help='For Saving the current Model')
+    parser.add_argument('--local', action='store_true',
+                        help='For local dev')
+    parser.add_argument('--load-encoder', type=str, default='', metavar='N',
+                        help='load pretrained encoder')
     args = parser.parse_args()
     return args
