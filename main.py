@@ -18,13 +18,14 @@ from multiprocessing import Pool
 
 def main():
     args = getargs()
+    print(args)
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     print("using cuda: ", use_cuda)
     torch.manual_seed(args.seed)
     device = torch.device("cuda:0" if use_cuda else "cpu")
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
-    dset = PointCloudDataset()
+    dset = PointCloudDataset(args.local)
     train_loader = torch.utils.data.DataLoader(
         dset,
         batch_size=args.batch_size, shuffle=True, **kwargs)
@@ -33,9 +34,14 @@ def main():
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
     k = args.k
+
     encoder = Encoder(k).to(device)
     decoder = Decoder(k).to(device)
     adversary = Adversary(k).to(device)
+
+    if args.load_encoder:
+        encoder.load_state_dict(torch.load(args.load_encoder))
+
     params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
     optimizer = optim.Adam(params, lr=args.lr)
     ## Visualize one batch of training data
@@ -46,7 +52,7 @@ def main():
         for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
             with torch.no_grad():
                 # concat = torch.cat((data, encoding), 0)
-                imshow(data[0, 0, :, :, :], data[1, 0, :, :, :], encoding[0, 0, :, :, :], encoding[1, 0, :, :, :], epoch, i)
+                imshow(data[0, 0, :, :, :], data[0, 0, :, :, :], encoding[0, 0, :, :, :], encoding[0, 0, :, :, :], epoch, i)
 
     runner.visualize()
 

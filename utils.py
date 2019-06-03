@@ -181,10 +181,8 @@ def getargs():
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=1e-3, metavar='LR',
                         help='learning rate (default: 0.01)')
-
     parser.add_argument('--k', type=int, default=10, metavar='LR',
                         help='Bits in secret message')
-
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                         help='SGD momentum (default: 0.5)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
@@ -193,8 +191,11 @@ def getargs():
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
-
     parser.add_argument('--save-model', action='store_true', default=True,
                         help='For Saving the current Model')
+    parser.add_argument('--local', action='store_true',
+                        help='For local dev')
+    parser.add_argument('--load-encoder', type=str, default='', metavar='N',
+                        help='load pretrained encoder')
     args = parser.parse_args()
     return args
