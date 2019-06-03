@@ -79,7 +79,8 @@ def capture_picture(p, data, output_height, output_width):
     return result
 
 
-ps = [{"x": 16, "y": 40, "z": -10, "phi": 3.875}, {"x": 16, "y": 40, "z": 0, "phi": 5.425}, {"x": 10, "y": 32, "z": 0},
+ps = [{"x": 16, "y": 40, "z": -10, "phi": 3.875}, {"x": 16, "y": 40, "z": 0, "phi": 5.425},
+      dict(x=10, y=32, z=0, phi=3.875),
       {"x": 10, "y": 32, "z": 0, "phi": 5.425}, {"x": 32, "y": 40, "z": -10, "phi": 0},
       {"x": 32, "y": 40, "z": -10, "phi": 3.1}]
 
@@ -88,6 +89,7 @@ def convert_to_2d(data):
     # N x 1 x 64 x 64 x 64 --> N x 6 x 128 x 128
     results = []
     for image in data:
+        print("converted image")
         image = image[0]
         image_results = []
         for p in ps:
