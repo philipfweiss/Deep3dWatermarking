@@ -158,6 +158,8 @@ def imshow(im1, im2, im3, im4, e, i):
 
         plt.title(f'Examples')
 
+        print("saving, ", f'images/x_my_fig_{e}_{i}.pdf')
+
         plt.savefig(f'images/x_my_fig_{e}_{i}.pdf')
 
 
