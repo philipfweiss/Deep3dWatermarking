@@ -85,9 +85,14 @@ ps = [{"x": 16, "y": 40, "z": -10, "phi": 3.875}, {"x": 16, "y": 40, "z": 0, "ph
 
 
 def convert_to_2d(data):
+    # N x 1 x 64 x 64 x 64 --> N x 6 x 128 x 128
     results = []
-    for p in ps:
-        results.append(capture_picture(p, data, 128, 128))
+    for image in data:
+        image = image[0]
+        image_results = []
+        for p in ps:
+            image_results.append(capture_picture(p, image, 128, 128))
+        results.append(image_results)
     return torch.tensor(results)
 
 
