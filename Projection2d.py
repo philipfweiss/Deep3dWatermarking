@@ -28,17 +28,14 @@ def capture_picture(p, data, output_height, output_width):
 
     num_found = 0
 
-    # ax = fig.add_subplot(2, 2, 3)
+    dz = 1.
+    z = 1.
+
     # Draw from back to the front (high z coordinate to low z coordinate)
     for z in range(distance, p["z"], -1):
         if z >= data_depth:
             continue
         dist_from_point = z - p["z"]
-
-        # print("z: ", z)
-
-        # pleft = {"x": -dist_from_point + p["x"], "z": -dist_from_point + p["z"], "y": -dist_from_point + p["y"]}
-        # pright = {"x": dist_from_point + p["x"], "z": -dist_from_point + p["z"], "y": dist_from_point + p["y"]}
 
         pleft = {"x": (-cosphi_x * dist_from_point - sinphi_x * dist_from_point) + p["x"],
                  "z": (sinphi_x * dist_from_point - cosphi_x * dist_from_point) + p["z"],
@@ -46,16 +43,12 @@ def capture_picture(p, data, output_height, output_width):
         pright = {"x": (cosphi_x * dist_from_point - sinphi_x * dist_from_point) + p["x"],
                   "z": (-sinphi_x * dist_from_point - cosphi_x * dist_from_point) + p["z"],
                   "y": dist_from_point + p["y"]}
-        # viewpoint_ax.plot([pleft["x"], pright["x"]], [pleft["z"], pright["z"]], color='k', linestyle='-', linewidth=1)
-        # ax.plot([pleft["y"], pright["y"]], [pleft["z"], pright["z"]], color='c', linestyle='-', linewidth=1)
+
         original_x = pleft["x"]
         original_y = pleft["y"]
-        # print("pleft: ", pleft, " pright: ", pright)
         # segment the line
         dx = (pright["x"] - pleft["x"]) / screen_width
         dy = (pright["y"] - pleft["y"]) / screen_height
-        # print("dx 3d: ", (pright["x"] - pleft["x"]), " dx 2d: ", dx)
-        # print("dy 3d: ", (pright["y"] - pleft["y"]), " dy 2d: ", dy)
         # Raster line and draw a vertical line for each segment
         for x in range(0, screen_width):
             if pleft["x"] >= data_width or pleft["x"] <= 0:
@@ -65,16 +58,15 @@ def capture_picture(p, data, output_height, output_width):
                 if pleft["y"] >= data_height or pleft["y"] <= 0:
                     pleft["y"] += dy
                     continue
-                # TODO, make this vectorized using pytorch so it is differentiable
                 if data[int(pleft["x"]), int(pleft["y"]), z] != 0:
-                    # print("found one at ", int(pleft["x"]), int(pleft["y"]))
                     num_found += 1
                     result[x, y] = data[int(pleft["x"]), int(pleft["y"]), z]
-                    # result[x , int(y / dist_from_point * scale_height)] = data[int(pleft["x"]), int(pleft["y"]), z]
                 pleft["y"] += dy
             pleft["y"] = original_y
             pleft["x"] += dx
         pleft["x"] = original_x
+        z += dz
+        dz += 0.2
     print(num_found)
     return result
 
