@@ -64,23 +64,18 @@ def main():
                     save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i, "original")
                     save_2d_proj(encoding[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i, "encoded")
 
-            if (args.save_model_to) and (not args.local or epoch % 20 == 0):
-                print("saving model")
-                torch.save(encoder.state_dict(), "./models/"+args.save_model_to+"-encoder.pt")
-                torch.save(decoder.state_dict(), "./models/"+args.save_model_to+"-decoder.pt")
-                torch.save(adversary.state_dict(), "./models/"+args.save_model_to+"-adversary.pt")
-
         runner.visualize()
 
         runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
 
-    ## Make sure to include k.
+        if args.save_model_to:
+            print("saving model")
+            torch.save(encoder.state_dict(), "./models/" + args.save_model_to + "-encoder.pt")
+            torch.save(decoder.state_dict(), "./models/" + args.save_model_to + "-decoder.pt")
+            torch.save(adversary.state_dict(), "./models/" + args.save_model_to + "-adversary.pt")
+
     if args.quantify:
         quantify_results(encoder, decoder, adversary, test_loader, args, device)
-
-
-
-
 
 
 if __name__ == "__main__":
