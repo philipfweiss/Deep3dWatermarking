@@ -29,21 +29,10 @@ def capture_picture(p, data, output_height, output_width):
     result = np.zeros((screen_width, screen_height))
 
     num_found = 0
-
-    dz = -1
-    ddz = 0
-    # a = z_dif * dz_end * ddz ** 2
-    # dz = a
     # print(a)
     # Draw from back to the front (high z coordinate to low z coordinate)
-    z = distance
-    while z > p["z"]:
-        # print(z)
+    for z in range(distance, p["z"], -1):
         if z >= data_depth:
-            z += dz
-            dz += ddz
-            if dz >= -1:
-                dz = -1
             continue
         dist_from_point = z - p["z"]
 
@@ -69,17 +58,13 @@ def capture_picture(p, data, output_height, output_width):
                 if pleft["y"] >= data_height or pleft["y"] <= 0:
                     pleft["y"] += dy
                     continue
-                if data[int(pleft["x"]), int(pleft["y"]), int(z)] != 0:
+                if data[int(pleft["x"]), int(pleft["y"]), z] != 0:
                     num_found += 1
-                    result[x, y] = data[int(pleft["x"]), int(pleft["y"]), int(z)]
+                    result[x, y] = data[int(pleft["x"]), int(pleft["y"]), z]
                 pleft["y"] += dy
             pleft["y"] = original_y
             pleft["x"] += dx
         pleft["x"] = original_x
-        z += dz
-        dz += ddz
-        if dz >= -1:
-            dz = -1
     print(num_found)
     return result
 
