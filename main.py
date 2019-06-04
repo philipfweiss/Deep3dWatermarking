@@ -4,6 +4,7 @@ from encoder import Encoder
 from decoder import Decoder
 from adversary import Adversary
 from pprint import pprint
+from quantify_results import quantify_results
 import argparse
 import torch
 import torch.nn as nn
@@ -61,7 +62,7 @@ def main():
                     im2 = random.randint(0, args.batch_size - 1)
                     imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
 
-            if (args.save_model_to):
+            if (args.save_model_to) and (not args.local or epoch % 20 == 0):
                 print("saving model")
                 torch.save(encoder.state_dict(), "./models/"+args.save_model_to+"-encoder.pt")
                 torch.save(decoder.state_dict(), "./models/"+args.save_model_to+"-decoder.pt")
@@ -71,8 +72,9 @@ def main():
 
         runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
 
+    ## Make sure to include k.
     if args.quantify:
-        pass
+        quantify_results(encoder, decoder, adversary, test_loader, args, device)
 
 
 
