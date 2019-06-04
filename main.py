@@ -71,6 +71,10 @@ def main():
 
         runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
 
+    if args.quantify:
+        pass
+
+
 
 
 
