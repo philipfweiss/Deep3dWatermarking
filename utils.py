@@ -174,7 +174,7 @@ class RunModel:
                     if args.local: continue
                     im1 = random.randint(0, args.batch_size - 1)
                     im2 = random.randint(0, args.batch_size - 1)
-                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoder_output[im1, 0, :, :, :], encoder_output[im2, 0, :, :, :], epoch, batch_idx, "Test")
+                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoder_output[im1, 0, :, :, :], encoder_output[im2, 0, :, :, :], 0, batch_idx, "Test")
 
                     self.test_decoder_losses.append(decoder_loss.item())
                     self.test_adversary_losses.append(adversary_loss.item())
@@ -223,7 +223,7 @@ def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     draw_voxels(im4, ax)
 
     plt.title(whichrun+'Examples')
-    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"-images.pdf")
+    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+e+"bb"+i+"-images.pdf")
 
 
 def pw__expirement(data):
