@@ -169,6 +169,13 @@ class RunModel:
                 loss = encoder_loss + decoder_loss + adversary_loss
 
                 if batch_idx % args.log_interval == 0:
+
+
+                    if args.local: continue
+                    im1 = random.randint(0, args.batch_size - 1)
+                    im2 = random.randint(0, args.batch_size - 1)
+                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i, "Test")
+
                     self.test_decoder_losses.append(decoder_loss.item())
                     self.test_adversary_losses.append(adversary_loss.item())
                     self.test_encoder_losses.append(encoder_loss.item())
@@ -199,7 +206,7 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
 
     return message_tensor.to(device)
 
-def imshow(im1, im2, im3, im4, e, i):
+def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     im1 = im1.cpu().detach().numpy()
     im2 = im2.cpu().detach().numpy()
     im3 = im3.cpu().detach().numpy()
@@ -215,9 +222,8 @@ def imshow(im1, im2, im3, im4, e, i):
     ax = fig.add_subplot(2, 2, 4)
     draw_voxels(im4, ax)
 
-    plt.title('Examples')
-
-    plt.savefig("images/x_my_fig_" + str(e) + "_" + str(i) + ".pdf")
+    plt.title(whichrun+'Examples')
+    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"-images.pdf")
 
 
 def pw__expirement(data):
