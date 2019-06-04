@@ -172,8 +172,8 @@ class RunModel:
                     im1 = random.randint(0, args.batch_size - 1)
                     im2 = random.randint(0, args.batch_size - 1)
                     imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoder_output[im1, 0, :, :, :], encoder_output[im2, 0, :, :, :], 0, batch_idx, "Test")
-                    save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Train", epoch, batch_idx, "original")
-                    save_2d_proj(encoder_output[im1, 0, :, :, :], args.save_model_to, "Train", epoch, batch_idx, "encoded")
+                    save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Test", epoch, batch_idx, "original")
+                    save_2d_proj(encoder_output[im1, 0, :, :, :], args.save_model_to, "Test", epoch, batch_idx, "encoded")
 
                     self.test_decoder_losses.append(decoder_loss.item())
                     self.test_adversary_losses.append(adversary_loss.item())
