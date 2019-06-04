@@ -28,7 +28,7 @@ class Adversary(nn.Module):
         self.fc1 = torch.nn.utils.weight_norm(nn.Linear(40960, k), name='weight')
         self.fc3 = torch.nn.utils.weight_norm(nn.Linear(k,1), name='weight')
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
-        self.sigmoid = nn.Sigmoid()
+        self.tanh = nn.tanh()
 
     def forward(self, x):
 
@@ -44,5 +44,5 @@ class Adversary(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.leaky_relu(self.fc1(x))
         x = self.fc3(x)
-        x = self.sigmoid(x)
+        x = self.tanh(x)
         return x

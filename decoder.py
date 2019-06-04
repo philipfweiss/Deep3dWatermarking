@@ -30,7 +30,7 @@ class Decoder(nn.Module):
         self.fc1 = torch.nn.utils.weight_norm(nn.Linear(40960, 2048), name='weight')
         self.fc2 = torch.nn.utils.weight_norm(nn.Linear(2048, k), name='weight')
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
-        self.sigmoid = nn.Sigmoid()
+        self.tanh = nn.tanh()
 
     def forward(self, x):
         # x = convert_to_2d(x)
@@ -48,5 +48,5 @@ class Decoder(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.leaky_relu(self.fc1(x))
         x = self.fc2(x)
-        x = self.sigmoid(x)
+        x = self.tanh(x)
         return x
