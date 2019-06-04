@@ -4,6 +4,7 @@ from encoder import Encoder
 from decoder import Decoder
 from adversary import Adversary
 from pprint import pprint
+from quantify_results import quantify_results
 import argparse
 import torch
 import torch.nn as nn
@@ -74,11 +75,7 @@ def main():
             torch.save(adversary.state_dict(), "./models/" + args.save_model_to + "-adversary.pt")
 
     if args.quantify:
-        pass
-
-
-
-
+        quantify_results(encoder, decoder, adversary, test_loader, args, device)
 
 
 if __name__ == "__main__":
