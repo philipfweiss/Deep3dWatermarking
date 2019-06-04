@@ -43,6 +43,6 @@ class Adversary(nn.Module):
         ## Flatten and affine
         x = x.view(x.size(0), -1)
         x = self.leaky_relu(self.fc1(x))
-        x = self.leaky_relu(self.fc3(x))
+        x = self.fc3(x)
         x = self.sigmoid(x)
         return x
