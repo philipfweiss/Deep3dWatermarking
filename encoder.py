@@ -39,8 +39,8 @@ class Encoder(nn.Module):
         intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
         intermediate = self.leaky_relu(self.bn2(self.conv2(intermediate)))
         ## Concat x and message
-        mask = self.blend(self.blend(mask))
-        message = message*mask
+        mask1 = self.blend(self.blend(mask))
+        message = message*mask1
         concated = torch.cat((intermediate, message), 1)
 
         ## more conv layers
@@ -48,7 +48,7 @@ class Encoder(nn.Module):
         encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
-        encoded *= mask
+        encoded *= mask1
         encoded = encoded / torch.sum(encoded)
 
         skip_connection = encoded + x
