@@ -56,9 +56,10 @@ def main():
             for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
                 with torch.no_grad():
                     # concat = torch.cat((data, encoding), 0)
+                    if args.local: continue
                     im1 = random.randint(0, args.batch_size - 1)
                     im2 = random.randint(0, args.batch_size - 1)
-                    imshow(data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
+                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
 
             if (args.save_model_to):
                 print("saving model")
@@ -68,7 +69,7 @@ def main():
 
         runner.visualize()
 
-
+        runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
 
 
 

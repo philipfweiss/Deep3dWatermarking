@@ -28,6 +28,7 @@ class RunModel:
         self.test_losses = []
         self.test_decoder_losses = []
         self.test_encoder_losses = []
+        self.test_adversary_losses = []
         self.test_image_gradients = []
         self.test_bits_correct = []
         self.test_total_bits = []
@@ -52,17 +53,17 @@ class RunModel:
 
         if vis=='test':
             plt.figure(1)
-            plt.title('Training Loss')
+            plt.title('Testing Loss')
             plt.plot(self.test_losses, 'r-', label='Total Loss')
             plt.plot(self.test_decoder_losses, 'b-', label='Decoder Loss')
             plt.plot(self.test_encoder_losses, 'g-', label='Encoder Loss')
-            plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
-            plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
+            plt.plot(self.test_adversary_losses, 'y-', label='Adversary Loss')
+            plt.plot(np.divide(self.test_bits_correct, self.test_total_bits).tolist(), 'c-', label='Accuracy')
             handles, labels = plt.gca().get_legend_handles_labels()
             by_label = OrderedDict(zip(labels, handles))
             plt.legend(by_label.values(), by_label.keys())
             plt.xlabel("Batch")
-            plt.savefig('results/test-'+self.args.save_model_to+'train-losses.pdf')
+            plt.savefig('results/test-'+self.args.save_model_to+'test-losses.pdf')
 
 
 
@@ -114,8 +115,6 @@ class RunModel:
                 if batch_idx % 50*args.log_interval == 0:
                     yield data, encoder_output
 
-
-                print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (numCorrect / args.k) )
                 self.train_decoder_losses.append(decoder_loss.item())
                 self.train_adversary_losses.append(adversary_loss.item())
                 self.train_encoder_losses.append(encoder_loss.item())
@@ -136,24 +135,57 @@ class RunModel:
         test_loss = 0
         correct = 0
         with torch.no_grad():
-            pass
-            # for data, target in test_loader:
-            #     N, C, D, W, H = data.shape
-            #     messageTensor = createMessageTensor(N, args.k, D, W, H, device)
-            #     if (device == "cuda"):
-            #         messageTensor = messageTensor.cuda()
-            #     desiredOutput = messageTensor[:, :, 0, 0, 0]
-            #     mask = torch.ceil(data)
-            #     encoder_output = encoder(data, messageTensor, mask)
-            #     decoder_output = decoder(encoder_output)
-            #     decoderpredictions = decoder_output.round()
-            #     numCorrect = float(torch.sum(decoderpredictions == desiredOutput).item()) / N
-            #     a, b, c, e, f = 4, 0.1, 0.2*50, 0.2, 0.2
-            #     decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
-            #     if batch_idx % args.log_interval == 0:
-            #         print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (numCorrect / args.k) )
-            #     self.train_decoder_losses.append(decoder_loss.item())
+            for batch_idx, data in enumerate(test_loader):
+                data = data.to(device)
 
+                N, C, D, W, H = data.shape
+
+                messageTensor = createMessageTensor(N, args.k, D, W, H, device)
+                if (device == "cuda"):
+                    messageTensor = messageTensor.cuda()
+                desiredOutput = messageTensor[:, :, 0, 0, 0]
+
+                mask = torch.ceil(data)
+                #mask = data
+                #output, encoding = model(data, messageTensor)
+                encoder_output = encoder(data, messageTensor, mask)
+                decoder_output = decoder(encoder_output)
+                adversary_output_fake = adversary(encoder_output)
+                adversary_output_real = adversary(data)
+
+                N = adversary_output_fake.size()[0]
+                true_labels = torch.ones(N).to(device)
+                false_labels = torch.zeros(N).to(device)
+
+                decoderpredictions = torch.where(decoder_output >= 0.5, torch.ones_like(decoder_output), torch.zeros_like(decoder_output))
+                numCorrect = float(torch.sum(decoderpredictions == desiredOutput).item()) / N
+
+                a, b, c, e, f = 4, 0.1, 0.2*50, 0.2, 0.2
+                decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
+                # diff_term = (encoder_output - data).norm(2) / (1 * D * H * W )
+                diff_term = (encoder_output - data).norm(3) / (1 * D * H * W)
+                encoder_loss = c * torch.mean(bce_loss(adversary_output_fake, true_labels)) + b * diff_term #encoder loss
+                adversary_loss = e * torch.mean(bce_loss(adversary_output_real, true_labels) + f * bce_loss(adversary_output_fake, false_labels))
+                loss = encoder_loss + decoder_loss + adversary_loss
+
+                if batch_idx % args.log_interval == 0:
+
+
+                    if args.local: continue
+                    im1 = random.randint(0, args.batch_size - 1)
+                    im2 = random.randint(0, args.batch_size - 1)
+                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoder_output[im1, 0, :, :, :], encoder_output[im2, 0, :, :, :], 0, batch_idx, "Test")
+
+                    self.test_decoder_losses.append(decoder_loss.item())
+                    self.test_adversary_losses.append(adversary_loss.item())
+                    self.test_encoder_losses.append(encoder_loss.item())
+                    self.test_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
+                    self.test_bits_correct.append(numCorrect)
+                    self.test_total_bits.append(args.k)
+                    self.visualize(vis='test')
+                    print('Test Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} \tEncoder L: {:.5f}  \tDecoder L: {:.5f} \tAdversary L: {:.5f}'.format(
+                        epoch, batch_idx * len(data), len(test_loader.dataset),
+                        100. * batch_idx / len(test_loader), loss.item(), encoder_loss.item(), decoder_loss.item(), adversary_loss.item()))
 
 
         # self.test_losses.append(test_loss)
@@ -174,7 +206,7 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
 
     return message_tensor.to(device)
 
-def imshow(im1, im2, im3, im4, e, i):
+def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     im1 = im1.cpu().detach().numpy()
     im2 = im2.cpu().detach().numpy()
     im3 = im3.cpu().detach().numpy()
@@ -190,9 +222,8 @@ def imshow(im1, im2, im3, im4, e, i):
     ax = fig.add_subplot(2, 2, 4)
     draw_voxels(im4, ax)
 
-    plt.title('Examples')
-
-    plt.savefig("images/x_my_fig_" + str(e) + "_" + str(i) + ".pdf")
+    plt.title(whichrun+'Examples')
+    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+e+"bb"+i+"-images.pdf")
 
 
 def pw__expirement(data):
