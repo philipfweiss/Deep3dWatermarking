@@ -7,7 +7,7 @@ from pyntcloud import PyntCloud
 import numpy as np
 
 parser = argparse.ArgumentParser(description='Only take shape files with a certain complexity.')
-parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at')
+parser.add_argument('--cutoff', type=int, help='an integer for the min number of vertices to cut off at', default=10000)
 parser.add_argument('--size', type=int, help='an integer for the max number of examples to pick', default=500)
 parser.add_argument('--norecompute', help='if program should recompute numpy files')
 parser.add_argument('--pcsize', type=int, help='the density of the point cloud')
@@ -21,9 +21,7 @@ obj_file_format = "model_normalized.obj"
 np_file_format = "model_normalized.npy"
 ply_file_format = "model_normalized.ply"
 
-vertice_cutoff = 10000
-if "--cutoff" in args:
-    vertice_cutoff = args["--cutoff"]
+vertice_cutoff = args.cutoff
 
 total_slice_size = args.size
 
