@@ -191,11 +191,12 @@ def getargs():
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
-    parser.add_argument('--save-model', action='store_true', default=True,
-                        help='For Saving the current Model')
     parser.add_argument('--local', action='store_true',
                         help='For local dev')
-    parser.add_argument('--load-encoder', type=str, default='', metavar='N',
-                        help='load pretrained encoder')
+    parser.add_argument('--save-model-to', default=None, action='store',
+                        help='For Saving the current Model')
+    parser.add_argument('--load-model-from', default=None, action='store',
+                            help='For Loading a Model')
+
     args = parser.parse_args()
     return args
