@@ -90,9 +90,9 @@ class RunModel:
 
 
                 print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (numCorrect / args.k) )
-                self.train_decoder_losses.append(decoder_loss.item() / a)
-                self.train_adversary_losses.append(adversary_loss.item() / f)
-                self.train_encoder_losses.append(encoder_loss.item() / (b + c))
+                self.train_decoder_losses.append(decoder_loss.item())
+                self.train_adversary_losses.append(adversary_loss.item())
+                self.train_encoder_losses.append(encoder_loss.item())
                 self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect)
