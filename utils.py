@@ -92,7 +92,7 @@ class RunModel:
             true_labels = torch.ones(N).to(device)
             false_labels = torch.zeros(N).to(device)
 
-            decoderpredictions = decoder_output.round()
+            decoderpredictions = torch.where(decoder_output >= 0.5, torch.ones_like(decoder_output), torch.zeros_like(decoder_output))
             numCorrect = float(torch.sum(decoderpredictions == desiredOutput).item()) / N
 
             a, b, c, e, f = 4, 0.1, 0.2*50, 0.2, 0.2

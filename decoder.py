@@ -27,15 +27,16 @@ class Decoder(nn.Module):
         self.bn6 = nn.BatchNorm3d(10)
         self.bn7 = nn.BatchNorm3d(10)
         self.dropout = torch.nn.Dropout3d(p=0.5, inplace=False)
-        self.fc1 = torch.nn.utils.weight_norm(nn.Linear(40960, k), name='weight')
+        self.fc1 = torch.nn.utils.weight_norm(nn.Linear(40960, 2048), name='weight')
+        self.fc2 = torch.nn.utils.weight_norm(nn.Linear(2048, k), name='weight')
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         # x = convert_to_2d(x)
         x = self.leaky_relu(self.bn1(self.conv1(x)))
-        x = self.pool(x)
         x = self.leaky_relu(self.bn2(self.conv2(x)))
+        x = self.pool(x)
         x = self.leaky_relu(self.bn3(self.conv3(x)))
         x = self.leaky_relu(self.bn4(self.conv4(x)))
         x = self.leaky_relu(self.bn5(self.conv5(x)))
@@ -44,6 +45,7 @@ class Decoder(nn.Module):
 
         ## Flatten and affine
         x = x.view(x.size(0), -1)
-        x = self.fc1(x)
+        x = self.leaky_relu(self.fc1(x))
+        x = self.leaky_relu(self.fc2(x))
         x = self.sigmoid(x)
         return x
