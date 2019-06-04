@@ -10,6 +10,7 @@ import numpy as np
 import random
 from collections import OrderedDict
 from printVoxels import draw_voxels
+from Projection2d import save_2d_proj
 
 def bce_loss(input, target):
     max_val = (-input).clamp(min=0)
@@ -168,12 +169,11 @@ class RunModel:
                 loss = encoder_loss + decoder_loss + adversary_loss
 
                 if batch_idx % args.log_interval == 0:
-
-
-                    if args.local: continue
                     im1 = random.randint(0, args.batch_size - 1)
                     im2 = random.randint(0, args.batch_size - 1)
                     imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoder_output[im1, 0, :, :, :], encoder_output[im2, 0, :, :, :], 0, batch_idx, "Test")
+                    save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Train", epoch, batch_idx, "original")
+                    save_2d_proj(encoder_output[im1, 0, :, :, :], args.save_model_to, "Train", epoch, batch_idx, "encoded")
 
                     self.test_decoder_losses.append(decoder_loss.item())
                     self.test_adversary_losses.append(adversary_loss.item())
@@ -211,12 +211,12 @@ def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     im3 = im3.cpu().detach().numpy()
     im4 = im4.cpu().detach().numpy()
 
-    fig = plt.figure(2)
+    plt.figure(2)
     f, axarr = plt.subplots(2, 2)
-    fig.colorbar(draw_voxels(im1, axarr[0, 0]), ax=axarr[0, 0])
-    fig.colorbar(draw_voxels(im2, axarr[0, 1]), ax=axarr[0, 1])
-    fig.colorbar(draw_voxels(im3, axarr[1, 0]), ax=axarr[1, 0])
-    fig.colorbar(draw_voxels(im4, axarr[1, 1]), ax=axarr[1, 1])
+    plt.colorbar(draw_voxels(im1, axarr[0, 0]), ax=axarr[0, 0])
+    plt.colorbar(draw_voxels(im2, axarr[0, 1]), ax=axarr[0, 1])
+    plt.colorbar(draw_voxels(im3, axarr[1, 0]), ax=axarr[1, 0])
+    plt.colorbar(draw_voxels(im4, axarr[1, 1]), ax=axarr[1, 1])
 
     plt.title(whichrun+'Examples')
     plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+str(e)+"bb"+str(i)+"-images.pdf")
