@@ -105,8 +105,8 @@ def capture_picture(p, data, output_height, output_width):
 # convert_to_2d(data)
 
 def save_2d_proj(data, save_model_to, whichrun, e, i, type):
-    plt.figure(3)
-    f, axarr = plt.subplots(2, 2)
+    fig = plt.figure(3)
+    f, axarr = fig.subplots(2, 2)
     # ax1 = axarr[0, 0]
     # ax1.axis('equal')
     # ax1.imshow(capture_picture({"x": 16, "y": 40, "z": -10, "phi": 3.875}, data, 64, 64))
@@ -120,29 +120,25 @@ def save_2d_proj(data, save_model_to, whichrun, e, i, type):
 
     ax1 = axarr[0, 0]
     ax1.axis('equal')
-    ax1.imshow(capture_picture(dict(x=10, y=32, z=0, phi=3.875), data, 64, 64), cmap="hot")
-    ax1.colorbar()
+    fig.colorbar(ax1.imshow(capture_picture(dict(x=10, y=32, z=0, phi=3.875), data, 64, 64), cmap="hot"), ax=ax1)
 
     ax1 = axarr[0, 1]
     ax1.axis('equal')
-    ax1.imshow(capture_picture({"x": 10, "y": 32, "z": 0, "phi": 5.425}, data, 64, 64), cmap="hot")
-    ax1.colorbar()
+    fig.colorbar(ax1.imshow(capture_picture({"x": 10, "y": 32, "z": 0, "phi": 5.425}, data, 64, 64), cmap="hot"), ax=ax1)
 
     data = np.swapaxes(data, 1, 2)
     data = np.swapaxes(data, 0, 2)
 
     ax1 = axarr[1, 0]
     ax1.axis('equal')
-    ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 0}, data, 64, 64), cmap="hot")
-    ax1.colorbar()
+    fig.colorbar(ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 0}, data, 64, 64), cmap="hot"), ax=ax1)
 
     ax1 = axarr[1, 1]
     ax1.axis('equal')
-    ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 3.1}, data, 64, 64), cmap="hot")
-    ax1.colorbar()
+    fig.colorbar(ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 3.1}, data, 64, 64), cmap="hot"), ax=ax1)
 
-    plt.title(whichrun + 'Perspective Projs')
-    plt.savefig("images/" + save_model_to + "-" + whichrun + "-epoch-" + str(e) + "-runind-" + str(i) + type +  "-proj-images.pdf")
+    fig.title(whichrun + 'Perspective Projs')
+    fig.savefig("images/" + save_model_to + "-" + whichrun + "-epoch-" + str(e) + "-runind-" + str(i) + type +  "-proj-images.pdf")
 
 # good values of phi, x, y: not really, still nead to mess around
 """

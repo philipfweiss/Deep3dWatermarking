@@ -8,8 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 def draw_voxels(data, ax):
     front = np.sum(data, axis=1)
-    ax.imshow(front, cmap="hot")
-    ax.colorbar()
+    return ax.imshow(front, cmap="hot")
 
     # data[data != 0] = 1
     # filled = data
