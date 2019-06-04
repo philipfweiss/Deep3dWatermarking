@@ -43,7 +43,6 @@ class RunModel:
             plt.plot(self.train_decoder_losses, 'b-', label='Decoder Loss')
             plt.plot(self.train_encoder_losses, 'g-', label='Encoder Loss')
             plt.plot(self.train_adversary_losses, 'y-', label='Adversary Loss')
-            plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
             plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
             handles, labels = plt.gca().get_legend_handles_labels()
             by_label = OrderedDict(zip(labels, handles))
