@@ -30,8 +30,8 @@ def capture_picture(p, data, output_height, output_width):
 
     num_found = 0
 
-    dz = -0
-    ddz = 0.3
+    dz = -1
+    ddz = 0
     # a = z_dif * dz_end * ddz ** 2
     # dz = a
     # print(a)
