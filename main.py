@@ -63,15 +63,15 @@ def main():
                     save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i, "original")
                     save_2d_proj(encoding[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i, "encoded")
 
-            if (args.save_model_to):
-                print("saving model")
-                torch.save(encoder.state_dict(), "./models/"+args.save_model_to+"-encoder.pt")
-                torch.save(decoder.state_dict(), "./models/"+args.save_model_to+"-decoder.pt")
-                torch.save(adversary.state_dict(), "./models/"+args.save_model_to+"-adversary.pt")
-
         runner.visualize()
 
         runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
+
+        if args.save_model_to:
+            print("saving model")
+            torch.save(encoder.state_dict(), "./models/" + args.save_model_to + "-encoder.pt")
+            torch.save(decoder.state_dict(), "./models/" + args.save_model_to + "-decoder.pt")
+            torch.save(adversary.state_dict(), "./models/" + args.save_model_to + "-adversary.pt")
 
     if args.quantify:
         pass
