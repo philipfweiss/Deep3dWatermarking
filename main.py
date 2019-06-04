@@ -39,10 +39,11 @@ def main():
     decoder = Decoder(k).to(device)
     adversary = Adversary(k).to(device)
 
+    if not args.save_model_to: Error("Must have a model to save to!")
     if args.load_model_from:
         encoder.load_state_dict(torch.load("./models/"+args.load_model_from + "-encoder.pt"))
         decoder.load_state_dict(torch.load("./models/"+args.load_model_from + "-decoder.pt"))
-        print(decoder)
+        adversary.load_state_dict(torch.load("./models/"+args.load_model_from + "-adversary.pt"))
 
     else:
         params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
@@ -66,6 +67,8 @@ def main():
                 torch.save(adversary.state_dict(), "./models/"+args.save_model_to+"-adversary.pt")
 
         runner.visualize()
+
+
 
 
 
