@@ -69,10 +69,10 @@ def capture_picture(p, data, output_height, output_width):
     return result
 
 
-ps = [{"x": 16, "y": 40, "z": -10, "phi": 3.875}, {"x": 16, "y": 40, "z": 0, "phi": 5.425},
-      dict(x=10, y=32, z=0, phi=3.875),
-      {"x": 10, "y": 32, "z": 0, "phi": 5.425}, {"x": 32, "y": 40, "z": -10, "phi": 0},
-      {"x": 32, "y": 40, "z": -10, "phi": 3.1}]
+# ps = [{"x": 16, "y": 40, "z": -10, "phi": 3.875}, {"x": 16, "y": 40, "z": 0, "phi": 5.425},
+#       dict(x=10, y=32, z=0, phi=3.875),
+#       {"x": 10, "y": 32, "z": 0, "phi": 5.425}, {"x": 32, "y": 40, "z": -10, "phi": 0},
+#       {"x": 32, "y": 40, "z": -10, "phi": 3.1}]
 
 
 # def convert_to_2d(data):
@@ -101,41 +101,44 @@ ps = [{"x": 16, "y": 40, "z": -10, "phi": 3.875}, {"x": 16, "y": 40, "z": 0, "ph
 #     pytens = torch.tensor(results)
 #     return pytens
 
-data = array([np.load("/Users/Lipman/Downloads/model_normalized-7.npy")])[0]
+# data = array([np.load("/Users/Lipman/Downloads/model_normalized-7.npy")])[0]
 # convert_to_2d(data)
 
-f, axarr = plt.subplots(3, 2)
-ax1 = axarr[0, 0]
-ax1.axis('equal')
-ax1.imshow(capture_picture({"x": 16, "y": 40, "z": -10, "phi": 3.875}, data, 64, 64))
+def save_2d_proj(data, save_model_to, whichrun, e, i):
+    plt.figure(3)
+    f, axarr = plt.subplots(2, 2)
+    # ax1 = axarr[0, 0]
+    # ax1.axis('equal')
+    # ax1.imshow(capture_picture({"x": 16, "y": 40, "z": -10, "phi": 3.875}, data, 64, 64))
+    #
+    # ax1 = axarr[0, 1]
+    # ax1.axis('equal')
+    # ax1.imshow(capture_picture({"x": 16, "y": 40, "z": 0, "phi": 5.425}, data, 64, 64))
 
-ax1 = axarr[0, 1]
-ax1.axis('equal')
-ax1.imshow(capture_picture({"x": 16, "y": 40, "z": 0, "phi": 5.425}, data, 64, 64))
+    data = data.cpu().detach().numpy()
+    data = np.swapaxes(data, 1, 2)
 
-data = np.swapaxes(data, 1, 2)
+    ax1 = axarr[0, 0]
+    ax1.axis('equal')
+    ax1.imshow(capture_picture(dict(x=10, y=32, z=0, phi=3.875), data, 64, 64))
 
-ax1 = axarr[1, 0]
-ax1.axis('equal')
-ax1.imshow(capture_picture(dict(x=10, y=32, z=0, phi=3.875), data, 64, 64))
+    ax1 = axarr[0, 1]
+    ax1.axis('equal')
+    ax1.imshow(capture_picture({"x": 10, "y": 32, "z": 0, "phi": 5.425}, data, 64, 64))
 
-ax1 = axarr[1, 1]
-ax1.axis('equal')
-ax1.imshow(capture_picture({"x": 10, "y": 32, "z": 0, "phi": 5.425}, data, 64, 64))
+    data = np.swapaxes(data, 1, 2)
+    data = np.swapaxes(data, 0, 2)
 
-data = np.swapaxes(data, 1, 2)
-data = np.swapaxes(data, 0, 2)
+    ax1 = axarr[1, 0]
+    ax1.axis('equal')
+    ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 0}, data, 64, 64))
 
-ax1 = axarr[2, 1]
-ax1.axis('equal')
-ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 0}, data, 64, 64))
+    ax1 = axarr[1, 1]
+    ax1.axis('equal')
+    ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 3.1}, data, 64, 64))
 
-ax1 = axarr[2, 0]
-ax1.axis('equal')
-ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 3.1}, data, 64, 64))
-
-plt.show()
-
+    plt.title(whichrun + 'Perspective Projs')
+    plt.savefig("images/" + save_model_to + "-" + whichrun + "-epoch-" + e + "-runind-" + i + "-proj-images.pdf")
 
 # good values of phi, x, y: not really, still nead to mess around
 """
