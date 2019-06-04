@@ -33,8 +33,8 @@ class Adversary(nn.Module):
     def forward(self, x):
 
         x = self.leaky_relu(self.bn1(self.conv1(x)))
-        x = self.pool(x)
         x = self.leaky_relu(self.bn2(self.conv2(x)))
+        x = self.pool(x)
         x = self.leaky_relu(self.bn3(self.conv3(x)))
         x = self.leaky_relu(self.bn4(self.conv4(x)))
         x = self.leaky_relu(self.bn5(self.conv5(x)))
@@ -43,6 +43,6 @@ class Adversary(nn.Module):
         ## Flatten and affine
         x = x.view(x.size(0), -1)
         x = self.leaky_relu(self.fc1(x))
-        x = self.fc3(x)
+        x = self.leaky_relu(self.fc3(x))
         x = self.sigmoid(x)
         return x
