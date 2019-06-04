@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.nn.functional as F
-from Projection2d import convert_to_2d
+# from Projection2d import convert_to_2d
 
 class Decoder(nn.Module):
     def __init__(self, k):

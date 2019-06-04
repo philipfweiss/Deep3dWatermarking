@@ -39,7 +39,7 @@ class Encoder(nn.Module):
         intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
         intermediate = self.leaky_relu(self.bn2(self.conv2(intermediate)))
         ## Concat x and message
-        # mask = self.blend(self.blend(mask))
+        mask = self.blend(self.blend(mask))
         message = message*mask
         concated = torch.cat((intermediate, message), 1)
 
