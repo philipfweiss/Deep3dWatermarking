@@ -39,31 +39,37 @@ def main():
     decoder = Decoder(k).to(device)
     adversary = Adversary(k).to(device)
 
-    if args.load_encoder:
-        encoder.load_state_dict(torch.load(args.load_encoder))
+    if args.load_model_from:
+        encoder.load_state_dict(torch.load("./models/"+args.load_model_from + "-encoder.pt"))
+        decoder.load_state_dict(torch.load("./models/"+args.load_model_from + "-decoder.pt"))
+        print(decoder)
 
-    params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
-    optimizer = optim.Adam(params, lr=args.lr)
-    ## Visualize one batch of training data
-    dataiter = iter(train_loader)
+    else:
+        params = list(adversary.parameters()) + list(encoder.parameters()) + list(decoder.parameters())
+        optimizer = optim.Adam(params, lr=args.lr)
+        ## Visualize one batch of training data
+        dataiter = iter(train_loader)
 
-    runner = RunModel()
-    for epoch in range(args.epochs):
-        for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
-            with torch.no_grad():
-                # concat = torch.cat((data, encoding), 0)
-                im1 = random.randint(0, args.batch_size - 1)
-                im2 = random.randint(0, args.batch_size - 1)
-                imshow(data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
+        runner = RunModel()
+        for epoch in range(args.epochs):
+            for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
+                with torch.no_grad():
+                    # concat = torch.cat((data, encoding), 0)
+                    im1 = random.randint(0, args.batch_size - 1)
+                    im2 = random.randint(0, args.batch_size - 1)
+                    # imshow(data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
 
-    runner.visualize()
+            if (args.save_model_to):
+                print("saving model")
+                torch.save(encoder.state_dict(), "./models/"+args.save_model_to+"-encoder.pt")
+                torch.save(decoder.state_dict(), "./models/"+args.save_model_to+"-decoder.pt")
+                torch.save(adversary.state_dict(), "./models/"+args.save_model_to+"-adversary.pt")
+
+        runner.visualize()
 
 
-    if (args.save_model):
-        print("saving model")
-        torch.save(encoder.state_dict(),"encoder.pt")
-        torch.save(decoder.state_dict(),"decoder.pt")
-        torch.save(adversary.state_dict(),"adversary.pt")
+
+
 
 if __name__ == "__main__":
     main()
