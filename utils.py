@@ -195,7 +195,7 @@ def getargs():
                         help='For local dev')
     parser.add_argument('--save-model-to', default="johnny-smells", action='store',
                         help='For Saving the current Model')
-    parser.add_argument('--load-model-from', default="johnny-smells", action='store',
+    parser.add_argument('--load-model-from', default=None, action='store',
                             help='For Loading a Model')
 
     args = parser.parse_args()
