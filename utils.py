@@ -28,6 +28,7 @@ class RunModel:
         self.test_losses = []
         self.test_decoder_losses = []
         self.test_encoder_losses = []
+        self.test_adversary_losses = []
         self.test_image_gradients = []
         self.test_bits_correct = []
         self.test_total_bits = []
@@ -134,7 +135,7 @@ class RunModel:
         test_loss = 0
         correct = 0
         with torch.no_grad():
-            for data, target in test_loader:
+            for batch_idx, data in enumerate(test_loader):
                 data = data.to(device)
 
                 N, C, D, W, H = data.shape
