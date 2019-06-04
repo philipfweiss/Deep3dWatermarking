@@ -29,9 +29,13 @@ class Adversary(nn.Module):
         self.fc3 = torch.nn.utils.weight_norm(nn.Linear(k,1), name='weight')
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.tanh = torch.nn.Tanh()
 =======
         self.tanh = nn.Tanh()
+>>>>>>> a
+=======
+        self.tanh = torch.nn.Tanh()
 >>>>>>> a
 
     def forward(self, x):
