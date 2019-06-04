@@ -61,8 +61,8 @@ def main():
                     im1 = random.randint(0, args.batch_size - 1)
                     im2 = random.randint(0, args.batch_size - 1)
                     imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i)
-                    save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i)
-
+                    save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i, "original")
+                    save_2d_proj(encoding[im1, 0, :, :, :], args.save_model_to, "Train", epoch, i, "encoded")
 
             if (args.save_model_to) and (not args.local or epoch % 20 == 0):
                 print("saving model")
