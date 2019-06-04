@@ -16,7 +16,7 @@ def bce_loss(input, target):
     return input - input * target + max_val + ((-max_val).exp() + (-input - max_val).exp()).log()
 
 class RunModel:
-    def __init__(self):
+    def __init__(self, args):
         self.train_losses = []
         self.train_decoder_losses = []
         self.train_encoder_losses = []
@@ -32,6 +32,8 @@ class RunModel:
         self.test_bits_correct = []
         self.test_total_bits = []
 
+        self.args = args
+
     def visualize(self, vis='train'):
         if vis == 'train':
             plt.figure(1)
@@ -46,7 +48,7 @@ class RunModel:
             by_label = OrderedDict(zip(labels, handles))
             plt.legend(by_label.values(), by_label.keys())
             plt.xlabel("Batch")
-            plt.savefig('results/'+args.save_model_to+'train-losses.pdf')
+            plt.savefig('results/'+self.args.save_model_to+'train-losses.pdf')
 
         if vis=='test':
             plt.figure(1)
@@ -60,7 +62,7 @@ class RunModel:
             by_label = OrderedDict(zip(labels, handles))
             plt.legend(by_label.values(), by_label.keys())
             plt.xlabel("Batch")
-            plt.savefig('results/test-'+args.save_model_to+'train-losses.pdf')
+            plt.savefig('results/test-'+self.args.save_model_to+'train-losses.pdf')
 
 
 
