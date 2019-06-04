@@ -174,7 +174,7 @@ class RunModel:
                     if args.local: continue
                     im1 = random.randint(0, args.batch_size - 1)
                     im2 = random.randint(0, args.batch_size - 1)
-                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoding[im1, 0, :, :, :], encoding[im2, 0, :, :, :], epoch, i, "Test")
+                    imshow(args, data[im1, 0, :, :, :], data[im2, 0, :, :, :], encoder_output[im1, 0, :, :, :], encoder_output[im2, 0, :, :, :], epoch, batch_idx, "Test")
 
                     self.test_decoder_losses.append(decoder_loss.item())
                     self.test_adversary_losses.append(adversary_loss.item())
