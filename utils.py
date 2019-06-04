@@ -223,7 +223,7 @@ def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     draw_voxels(im4, ax)
 
     plt.title(whichrun+'Examples')
-    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+e+"bb"+i+"-images.pdf")
+    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+str(e)+"bb"+str(i)+"-images.pdf")
 
 
 def pw__expirement(data):
