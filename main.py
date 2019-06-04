@@ -69,7 +69,7 @@ def main():
 
         runner.visualize()
 
-    runner.test(args, encoder, decoder, adversary, device, test_loader, epoch)
+        runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
 
 
 
