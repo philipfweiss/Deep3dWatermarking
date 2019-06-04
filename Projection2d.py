@@ -138,7 +138,7 @@ def save_2d_proj(data, save_model_to, whichrun, e, i):
     ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 3.1}, data, 64, 64))
 
     plt.title(whichrun + 'Perspective Projs')
-    plt.savefig("images/" + save_model_to + "-" + whichrun + "-epoch-" + e + "-runind-" + i + "-proj-images.pdf")
+    plt.savefig("images/" + save_model_to + "-" + whichrun + "-epoch-" + str(e) + "-runind-" + str(i) + "-proj-images.pdf")
 
 # good values of phi, x, y: not really, still nead to mess around
 """
