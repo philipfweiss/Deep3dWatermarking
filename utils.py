@@ -16,7 +16,7 @@ def bce_loss(input, target):
     return input - input * target + max_val + ((-max_val).exp() + (-input - max_val).exp()).log()
 
 class RunModel:
-    def __init__(self):
+    def __init__(self, args):
         self.train_losses = []
         self.train_decoder_losses = []
         self.train_encoder_losses = []
@@ -25,20 +25,46 @@ class RunModel:
         self.bits_correct = []
         self.total_bits = []
 
-    def visualize(self):
-        plt.figure(1)
-        plt.title('Training Loss')
-        plt.plot(self.train_losses, 'r-', label='Total Loss')
-        plt.plot(self.train_decoder_losses, 'b-', label='Decoder Loss')
-        plt.plot(self.train_encoder_losses, 'g-', label='Encoder Loss')
-        plt.plot(self.train_adversary_losses, 'y-', label='Adversary Loss')
-        plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
-        plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
-        handles, labels = plt.gca().get_legend_handles_labels()
-        by_label = OrderedDict(zip(labels, handles))
-        plt.legend(by_label.values(), by_label.keys())
-        plt.xlabel("Batch")
-        plt.savefig('results/losses.pdf')
+        self.test_losses = []
+        self.test_decoder_losses = []
+        self.test_encoder_losses = []
+        self.test_image_gradients = []
+        self.test_bits_correct = []
+        self.test_total_bits = []
+
+        self.args = args
+
+    def visualize(self, vis='train'):
+        if vis == 'train':
+            plt.figure(1)
+            plt.title('Training Loss')
+            plt.plot(self.train_losses, 'r-', label='Total Loss')
+            plt.plot(self.train_decoder_losses, 'b-', label='Decoder Loss')
+            plt.plot(self.train_encoder_losses, 'g-', label='Encoder Loss')
+            plt.plot(self.train_adversary_losses, 'y-', label='Adversary Loss')
+            plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
+            plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
+            handles, labels = plt.gca().get_legend_handles_labels()
+            by_label = OrderedDict(zip(labels, handles))
+            plt.legend(by_label.values(), by_label.keys())
+            plt.xlabel("Batch")
+            plt.savefig('results/'+self.args.save_model_to+'train-losses.pdf')
+
+        if vis=='test':
+            plt.figure(1)
+            plt.title('Training Loss')
+            plt.plot(self.test_losses, 'r-', label='Total Loss')
+            plt.plot(self.test_decoder_losses, 'b-', label='Decoder Loss')
+            plt.plot(self.test_encoder_losses, 'g-', label='Encoder Loss')
+            plt.plot(self.train_image_gradients, 'm-', label='Sum of Image Gradient')
+            plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
+            handles, labels = plt.gca().get_legend_handles_labels()
+            by_label = OrderedDict(zip(labels, handles))
+            plt.legend(by_label.values(), by_label.keys())
+            plt.xlabel("Batch")
+            plt.savefig('results/test-'+self.args.save_model_to+'train-losses.pdf')
+
+
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
@@ -110,18 +136,27 @@ class RunModel:
         test_loss = 0
         correct = 0
         with torch.no_grad():
-            for data, target in test_loader:
-                data, target = data.to(device), target.to(device)
-                encoder_output = encoder(data)
-                decoder_output = decoder(encoder_output)
-                adversary_output_true = adversary(data)
-                adversary_output_false = adversary(encoder_output)
-                test_loss += F.cross_entropy(decoder_output, target, reduction='sum').item() # sum up batch loss
-                pred = decoder_output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
-                num_cor = pred.eq(target.view_as(pred)).sum().item()
-                print(num_cor)
-                correct += num_cor
-        self.test_losses.append(test_loss)
+            pass
+            # for data, target in test_loader:
+            #     N, C, D, W, H = data.shape
+            #     messageTensor = createMessageTensor(N, args.k, D, W, H, device)
+            #     if (device == "cuda"):
+            #         messageTensor = messageTensor.cuda()
+            #     desiredOutput = messageTensor[:, :, 0, 0, 0]
+            #     mask = torch.ceil(data)
+            #     encoder_output = encoder(data, messageTensor, mask)
+            #     decoder_output = decoder(encoder_output)
+            #     decoderpredictions = decoder_output.round()
+            #     numCorrect = float(torch.sum(decoderpredictions == desiredOutput).item()) / N
+            #     a, b, c, e, f = 4, 0.1, 0.2*50, 0.2, 0.2
+            #     decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
+            #     if batch_idx % args.log_interval == 0:
+            #         print(desiredOutput[0, :], decoder_output[0, :], "Percent correct: %d" % (numCorrect / args.k) )
+            #     self.train_decoder_losses.append(decoder_loss.item())
+
+
+
+        # self.test_losses.append(test_loss)
         # print(epoch, " reee ", test_loss)
 
 
