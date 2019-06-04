@@ -193,7 +193,7 @@ def getargs():
                         help='how many batches to wait before logging training status')
     parser.add_argument('--local', action='store_true',
                         help='For local dev')
-    parser.add_argument('--save-model-to', default=None, default="johnny-smells" action='store',
+    parser.add_argument('--save-model-to', default=None, default="johnny-smells", action='store',
                         help='For Saving the current Model')
     parser.add_argument('--load-model-from', default=None, default="johnny-smells", action='store',
                             help='For Loading a Model')
