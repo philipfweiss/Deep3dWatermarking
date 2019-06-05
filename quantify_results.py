@@ -39,10 +39,10 @@ def quantify_results(pt_encoder, pt_decoder, pt_adversary, test_set, args, devic
 
 
 def generate_test_images(args, im1, im2, im3, im4):
-    im1 = im1.cpu().detach().numpy()
-    im2 = im2.cpu().detach().numpy()
-    im3 = im3.cpu().detach().numpy()
-    im4 = im4.cpu().detach().numpy()
+    im1 = im1.detach().numpy()
+    im2 = im2.detach().numpy()
+    im3 = im3.detach().numpy()
+    im4 = im4.detach().numpy()
 
     fig = plt.figure(2)
     ax = fig.add_subplot(2, 2, 1)

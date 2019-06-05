@@ -206,10 +206,10 @@ def createMessageTensor(batchsize, message_len, depth, width, height, device):
     return message_tensor.to(device)
 
 def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
-    im1 = im1.cpu().detach().numpy()
-    im2 = im2.cpu().detach().numpy()
-    im3 = im3.cpu().detach().numpy()
-    im4 = im4.cpu().detach().numpy()
+    im1 = im1.detach().numpy()
+    im2 = im2.detach().numpy()
+    im3 = im3.detach().numpy()
+    im4 = im4.detach().numpy()
 
     plt.figure(2)
     f, axarr = plt.subplots(2, 2)
