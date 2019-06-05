@@ -53,7 +53,7 @@ def main():
         ## Visualize one batch of training data
         dataiter = iter(train_loader)
 
-        runner = RunModel(args)
+        # runner = RunModel(args)
         # for epoch in range(args.epochs):
         #     for i, (data, encoding) in enumerate(runner.train(args, encoder, decoder, adversary, device, train_loader, optimizer, epoch)):
         #         with torch.no_grad():
