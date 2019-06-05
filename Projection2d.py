@@ -119,7 +119,7 @@ def save_2d_proj(data, save_model_to, whichrun, e, i, type):
     # ax1.axis('equal')
     # ax1.imshow(capture_picture({"x": 16, "y": 40, "z": 0, "phi": 5.425}, data, 64, 64))
 
-    data = data.detach().numpy()
+    data = data.cpu().detach().numpy()
     data = np.swapaxes(data, 1, 2)
 
     ax1 = axarr[0, 0]
