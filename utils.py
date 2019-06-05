@@ -115,10 +115,10 @@ class RunModel:
                 if batch_idx % 50*args.log_interval == 0:
                     yield data, encoder_output
 
-                self.train_decoder_losses.append(decoder_loss.item())
-                self.train_adversary_losses.append(adversary_loss.item())
-                self.train_encoder_losses.append(encoder_loss.item())
-                self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
+                self.test_decoder_losses.append(decoder_loss.item() / a)
+                self.test_adversary_losses.append(adversary_loss.item() / ((e + f) / 2))
+                self.test_encoder_losses.append(encoder_loss.item() / ((c + b) / 2))
+                self.train_losses.append(loss.item() / ((a + b + c + e + f) / 5)) #(epoch * args.batch_size + batch_idx,
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect)
                 self.total_bits.append(args.k)
@@ -175,9 +175,9 @@ class RunModel:
                     save_2d_proj(data[im1, 0, :, :, :], args.save_model_to, "Test", epoch, batch_idx, "original")
                     save_2d_proj(encoder_output[im1, 0, :, :, :], args.save_model_to, "Test", epoch, batch_idx, "encoded")
 
-                    self.test_decoder_losses.append(decoder_loss.item())
-                    self.test_adversary_losses.append(adversary_loss.item())
-                    self.test_encoder_losses.append(encoder_loss.item())
+                    self.test_decoder_losses.append(decoder_loss.item() / a)
+                    self.test_adversary_losses.append(adversary_loss.item() / ((e + f) / 2))
+                    self.test_encoder_losses.append(encoder_loss.item() / ((c + b) / 2))
                     self.test_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                     self.test_bits_correct.append(numCorrect)
                     self.test_total_bits.append(args.k)
