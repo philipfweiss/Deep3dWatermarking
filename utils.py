@@ -219,7 +219,7 @@ def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     plt.colorbar(draw_voxels(im4, axarr[1, 1]), ax=axarr[1, 1])
 
     plt.title(whichrun+'Examples')
-    plt.savefig("images/"+args.save_model_to+"/"+whichrun+"aa"+str(e)+"bb"+str(i)+"-images.pdf")
+    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+str(e)+"bb"+str(i)+"-images.pdf")
     plt.close()
 
 

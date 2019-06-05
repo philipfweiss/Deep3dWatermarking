@@ -141,7 +141,7 @@ def save_2d_proj(data, save_model_to, whichrun, e, i, type):
     ax1.axis('equal')
     plt.colorbar(ax1.imshow(capture_picture({"x": 32, "y": 40, "z": -10, "phi": 3.1}, data, output_size, output_size), cmap=cmap), ax=ax1)
 
-    plt.savefig("images/" + save_model_to + "/" + whichrun + "-epoch-" + str(e) + "-runind-" + str(i) + type +  "-proj-images.pdf")
+    plt.savefig("images/" + save_model_to + "-" + whichrun + "-epoch-" + str(e) + "-runind-" + str(i) + type +  "-proj-images.pdf")
     plt.close()
 
 # data = array([np.load("/Users/Lipman/Downloads/model_normalized-7.npy")])[0]
