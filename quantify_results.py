@@ -30,8 +30,8 @@ def quantify_results(pt_encoder, pt_decoder, pt_adversary, test_set, args, devic
         adversary_loss = (torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))).detach().numpy()
 
 
-        if idx == 0:
-            generate_test_images(args, data[0, 0, :, :, :], data[0, 0, :, :, :], encoder_output[0, 0, :, :, :], encoder_output[0, 0, :, :, :])
+        # if idx == 0:
+        #     generate_test_images(args, data[0, 0, :, :, :], data[0, 0, :, :, :], encoder_output[0, 0, :, :, :], encoder_output[0, 0, :, :, :])
 
 
 
