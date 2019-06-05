@@ -40,10 +40,10 @@ class RunModel:
         if vis == 'train':
             plt.figure(1)
             plt.title('Training Loss')
-            plt.plot(self.train_losses, 'r-', label='Total Loss')
-            plt.plot(self.train_decoder_losses, 'b-', label='Decoder Loss')
-            plt.plot(self.train_encoder_losses, 'g-', label='Encoder Loss')
-            plt.plot(self.train_adversary_losses, 'y-', label='Adversary Loss')
+            plt.plot([x / max(self.train_losses) for x in self.train_losses], 'r-', label='Total Loss')
+            plt.plot([x / max(self.train_decoder_losses) for x in self.train_decoder_losses], 'b-', label='Decoder Loss')
+            plt.plot([x / max(self.train_encoder_losses) for x in self.train_encoder_losses], 'g-', label='Encoder Loss')
+            plt.plot([x / max(self.train_adversary_losses) for x in self.train_adversary_losses], 'y-', label='Adversary Loss')
             plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
             handles, labels = plt.gca().get_legend_handles_labels()
             by_label = OrderedDict(zip(labels, handles))
@@ -115,10 +115,10 @@ class RunModel:
                 if batch_idx % 50*args.log_interval == 0:
                     yield data, encoder_output
 
-                self.test_decoder_losses.append(decoder_loss.item() / a)
-                self.test_adversary_losses.append(adversary_loss.item() / ((e + f) / 2))
-                self.test_encoder_losses.append(encoder_loss.item() / ((c + b) / 2))
-                self.train_losses.append(loss.item() / ((a + b + c + e + f) / 5)) #(epoch * args.batch_size + batch_idx,
+                self.train_decoder_losses.append(decoder_loss.item())
+                self.train_adversary_losses.append(adversary_loss.item())
+                self.train_encoder_losses.append(encoder_loss.item())
+                self.train_losses.append(loss.item()) #(epoch * args.batch_size + batch_idx,
                 self.train_image_gradients.append(image_grad)
                 self.bits_correct.append(numCorrect)
                 self.total_bits.append(args.k)
