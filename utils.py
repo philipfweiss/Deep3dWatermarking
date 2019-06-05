@@ -43,7 +43,7 @@ class RunModel:
             plt.plot([x / max(self.train_losses) for x in self.train_losses], 'r-', label='Total Loss')
             plt.plot([x / max(self.train_decoder_losses) for x in self.train_decoder_losses], 'b-', label='Decoder Loss')
             plt.plot([x / max(self.train_encoder_losses) for x in self.train_encoder_losses], 'g-', label='Encoder Loss')
-            plt.plot([x / max(self.train_adversary_losses) for x in self.train_adversary_losses], 'y-', label='Adversary Loss')
+            # plt.plot([x / max(self.train_adversary_losses) for x in self.train_adversary_losses], 'y-', label='Adversary Loss')
             plt.plot(np.divide(self.bits_correct, self.total_bits).tolist(), 'c-', label='Accuracy')
             handles, labels = plt.gca().get_legend_handles_labels()
             by_label = OrderedDict(zip(labels, handles))
