@@ -66,7 +66,7 @@ def main():
 
         runner.visualize()
 
-        runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
+        # runner.test(args, encoder, decoder, adversary, device, test_loader, args.epochs)
 
         if args.save_model_to:
             print("saving model")

@@ -20,12 +20,8 @@ class Encoder(nn.Module):
 
         self.conv1 = nn.Conv3d(1, 1, 3, 1, 1)
         self.conv2 = nn.Conv3d(1, 1, 3, 1, 1)
-        self.conv3 = nn.Conv3d(1+k, 10, 7, 1, 1)
-        self.conv4 = nn.Conv3d(10, 1, 6, 1, 1)
-
-        self.conv31 = nn.Conv3d(1+k, 10, 7, 1, 1)
-        self.conv41 = nn.Conv3d(10, 1, 6, 1, 1)
-
+        self.conv3 = nn.Conv3d(1+k, 10, 3, 1, 1)
+        self.conv4 = nn.Conv3d(10, 1, 3, 1, 1)
         self.conv5 = nn.Conv3d(1, 10, 3, 1, 1)
         self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
@@ -51,9 +47,6 @@ class Encoder(nn.Module):
         concated = self.dropout(concated)
         encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
-
-        mask = self.leaky_relu(self.conv31(mask))
-        mask = self.leaky_relu(self.conv41(mask))
 
         encoded *= mask
         encoded = encoded / torch.sum(encoded)
