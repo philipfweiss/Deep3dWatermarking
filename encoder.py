@@ -25,6 +25,7 @@ class Encoder(nn.Module):
         self.conv5 = nn.Conv3d(1, 10, 3, 1, 1)
         self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
+        self.relu = nn.ReLU()
 
         self.dropout = torch.nn.Dropout3d(p=0.5, inplace=False)
 
@@ -59,4 +60,5 @@ class Encoder(nn.Module):
         final *= mask
         final *= 1/torch.sum(final)
 
+        final = self.relu(final)
         return final
