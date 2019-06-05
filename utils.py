@@ -50,6 +50,7 @@ class RunModel:
             plt.legend(by_label.values(), by_label.keys())
             plt.xlabel("Batch")
             plt.savefig('results/'+self.args.save_model_to+'train-losses.pdf')
+            plt.close()
 
         if vis=='test':
             plt.figure(1)
@@ -64,8 +65,7 @@ class RunModel:
             plt.legend(by_label.values(), by_label.keys())
             plt.xlabel("Batch")
             plt.savefig('results/test-'+self.args.save_model_to+'test-losses.pdf')
-
-
+            plt.close()
 
     def train(self, args, encoder, decoder, adversary, device, train_loader, optimizer, epoch):
         encoder.train()
@@ -219,7 +219,8 @@ def imshow(args, im1, im2, im3, im4, e, i, whichrun="Train"):
     plt.colorbar(draw_voxels(im4, axarr[1, 1]), ax=axarr[1, 1])
 
     plt.title(whichrun+'Examples')
-    plt.savefig("images/"+args.save_model_to+"-"+whichrun+"aa"+str(e)+"bb"+str(i)+"-images.pdf")
+    plt.savefig("images/"+args.save_model_to+"/"+whichrun+"aa"+str(e)+"bb"+str(i)+"-images.pdf")
+    plt.close()
 
 
 def pw__expirement(data):
