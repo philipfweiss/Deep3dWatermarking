@@ -52,8 +52,8 @@ class Encoder(nn.Module):
         encoded = self.leaky_relu(self.bn3(self.conv3(concated)))
         encoded = self.leaky_relu(self.bn4(self.conv4(encoded)))
 
-        mask = self.leaky_relu(self.bn3(self.conv31(mask)))
-        mask = self.leaky_relu(self.bn4(self.conv41(mask)))
+        mask = self.leaky_relu(self.conv31(mask))
+        mask = self.leaky_relu(self.conv41(mask))
 
         encoded *= mask
         encoded = encoded / torch.sum(encoded)
