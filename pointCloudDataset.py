@@ -28,7 +28,7 @@ class PointCloudDataset(Dataset):
     Returns the total number of examples in the dataset.
     """
     def __len__(self):
-        return 5#len([name for name in os.listdir(self.dataset_folder)])
+        return len([name for name in os.listdir(self.dataset_folder)])
 
     """
     Grabs the idx-th item from the dataset.
