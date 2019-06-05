@@ -58,7 +58,7 @@ class Encoder(nn.Module):
         final = self.leaky_relu(self.bn6(self.conv6(final)))
 
         final *= mask
+        final = self.relu(final)
         final *= 1/torch.sum(final)
 
-        final = self.relu(final)
         return final
