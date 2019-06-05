@@ -18,10 +18,10 @@ class Encoder(nn.Module):
         self.bn5 = nn.BatchNorm3d(10)
         self.bn6 = nn.BatchNorm3d(1)
 
-        self.conv1 = nn.Conv3d(1, 1, 3, 1, 1)
-        self.conv2 = nn.Conv3d(1, 1, 3, 1, 1)
-        self.conv3 = nn.Conv3d(1+k, 10, 3, 1, 1)
-        self.conv4 = nn.Conv3d(10, 1, 3, 1, 1)
+        self.conv1 = nn.Conv3d(1, 1, 7, 1, 1)
+        self.conv2 = nn.Conv3d(1, 1, 6, 1, 1)
+        self.conv3 = nn.Conv3d(1+k, 10, 5, 1, 1)
+        self.conv4 = nn.Conv3d(10, 1, 4, 1, 1)
         self.conv5 = nn.Conv3d(1, 10, 3, 1, 1)
         self.conv6 = nn.Conv3d(10, 1, 3, 1, 1)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
@@ -40,7 +40,6 @@ class Encoder(nn.Module):
         intermediate = self.leaky_relu(self.bn1(self.conv1(x)))
         intermediate = self.leaky_relu(self.bn2(self.conv2(intermediate)))
         ## Concat x and message
-        mask = self.blend(self.blend(mask))
         message = message*mask
         concated = torch.cat((intermediate, message), 1)
 
