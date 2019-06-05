@@ -258,7 +258,7 @@ def getargs():
                         help='For local dev')
 
     parser.add_argument('--quantify', action='store_true',
-                        help='For local dev')
+                        help='quantify results')
 
     parser.add_argument('--save-model-to', default="johnny-smells", action='store',
                         help='For Saving the current Model')
