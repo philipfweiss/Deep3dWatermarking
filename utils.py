@@ -98,7 +98,7 @@ class RunModel:
             decoderpredictions = torch.where(decoder_output >= 0.5, torch.ones_like(decoder_output), torch.zeros_like(decoder_output))
             numCorrect = float(torch.sum(decoderpredictions == desiredOutput).item()) / N
 
-            a, b, c, e, f = 4, 0.1, 0.2*50, 0.2, 0.2
+            a, b, c, e, f = 20, 0.1, 0.2*50, 0.2, 0.2
             decoder_loss = a * torch.mean(bce_loss(decoder_output, desiredOutput)) #decoder loss
             # diff_term = (encoder_output - data).norm(2) / (1 * D * H * W )
             diff_term = (encoder_output - data).norm(3) / (1 * D * H * W)
