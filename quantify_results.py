@@ -7,8 +7,11 @@ quantifies the results of that model on the testing set.
 
 def quantify_results(pt_encoder, pt_decoder, pt_adversary, test_set, args, device):
     ## Run the pretrained model on test set.
-
+    pt_adversary.test()
+    pt_decoder.test()
+    pt_encoder.test()
     for idx, data in enumerate(test_set):
+        data = data.to(device)
         print(data.shape)
         N, C, D, W, H = data.shape
         messageTensor = createMessageTensor(N, args.k, D, W, H, device)
