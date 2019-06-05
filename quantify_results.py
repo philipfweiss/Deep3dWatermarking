@@ -19,15 +19,15 @@ def quantify_results(pt_encoder, pt_decoder, pt_adversary, test_set, args, devic
         adversary_output_fake = pt_adversary(encoder_output)
         adversary_output_real = pt_adversary(data)
 
-        desiredOutput, decoder_output = desiredOutput.detach().numpy(), np.round(decoder_output.detach().numpy())
+        desiredOutput, decoder_output = desiredOutput.cpu().detach().numpy(), np.round(decoder_output.cpu().detach().numpy())
         accuracy = np.mean(np.abs(desiredOutput - decoder_output))
 
         true_labels = torch.ones(N).to(device)
         false_labels = torch.zeros(N).to(device)
         diff_term = (encoder_output - data).norm(3)
 
-        encoder_loss = diff_term.detach().numpy() #encoder loss
-        adversary_loss = (torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))).detach().numpy()
+        encoder_loss = diff_term.cpu().detach().numpy() #encoder loss
+        adversary_loss = (torch.mean(bce_loss(adversary_output_real, true_labels) + bce_loss(adversary_output_fake, false_labels))).cpu().detach().numpy()
 
 
         # if idx == 0:
